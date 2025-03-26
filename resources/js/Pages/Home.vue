@@ -19,7 +19,7 @@
         </SwiperSlide>
       </Swiper>
     </div>
-    <!-- Right side -->
+    <!-- Right side (Form)-->
     <div class="w-96">
       <p class="clock text-4xl mb-10 text-center">{{ currentTime }}</p>
       <form action="">
