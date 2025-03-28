@@ -5,14 +5,14 @@
         :class="[
             'z-50 flex h-screen justify-stretch pt-96',
             showYellow
-                ? 'flex-row space-x-[30rem]'
-                : 'flex-row-reverse space-x-[30rem] space-x-reverse',
+                ? 'flex-row-reverse space-x-[30rem] space-x-reverse'
+                : 'flex-row space-x-[30rem]',
         ]"
     >
         <!-- Left Side (Swiper) -->
         <div
             class="z-50 pl-5"
-            :data-aos="showYellow ? 'fade-right' : 'fade-left'"
+            :data-aos="showYellow ? 'fade-left' : 'fade-right'"
         >
             <Swiper
                 :modules="[Autoplay, Navigation, Pagination]"
@@ -46,7 +46,7 @@
         <!-- Right Side (Form) -->
         <div
             class="z-50 w-96"
-            :data-aos="showYellow ? 'fade-left' : 'fade-right'"
+            :data-aos="showYellow ? 'fade-right' : 'fade-left'"
         >
             <p class="clock mb-10 text-center text-4xl">{{ currentTime }}</p>
             <form action="">
@@ -56,7 +56,8 @@
                     class="h-10 w-full rounded-lg border bg-slate-50 px-5"
                 />
                 <button
-                    type="submit"
+                    @click="showModal = true"
+                    type="button"
                     :class="[
                         'mt-5 w-full rounded-md py-2',
                         showYellow ? 'bg-[#fbc04a]' : 'bg-[#fc8e8e]',
@@ -73,6 +74,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Component (moved outside the flex container) -->
+    <Modal
+        :show="showModal"
+        title="Confirmation"
+        confirmText="Save"
+        @close="showModal = false"
+        @confirm="handleConfirm"
+    >
+        <p>
+            This is a sample modal content. Are you sure you want to continue?
+        </p>
+    </Modal>
 </template>
 
 <script setup>
@@ -82,6 +96,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { ref, onMounted, onUnmounted, onBeforeUnmount, nextTick } from "vue";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Modal from "@/Components/Modal.vue";
 
 const showYellow = ref(true);
 const currentTime = ref(
@@ -89,6 +104,11 @@ const currentTime = ref(
 );
 let clockInterval = null;
 
+const showModal = ref(false);
+const handleConfirm = () => {
+    alert("Confirmed!");
+    showModal.value = false;
+};
 onMounted(() => {
     window.addEventListener("keydown", handleKeyDown);
 
@@ -150,6 +170,7 @@ const items = [
 </script>
 
 <style scoped>
+/* Carousel style */
 .mySwiper {
     width: 50rem;
     height: 300px;
