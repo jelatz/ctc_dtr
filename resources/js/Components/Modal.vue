@@ -5,7 +5,7 @@
         @click.self="closeModal"
     >
         <div
-            class="relative w-[90%] rounded-lg bg-white p-5 shadow-lg md:w-[30rem]"
+            class="relative w-[90%] rounded-lg bg-white p-5 shadow-lg md:w-[80rem]"
             data-aos="fade-up"
         >
             <!-- Modal Header -->
@@ -20,22 +20,16 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="mt-4">
+            <div class="mt-4 flex justify-stretch">
                 <slot />
             </div>
 
             <!-- Modal Footer -->
-            <div class="mt-4 flex justify-end space-x-2">
-                <button
-                    @click="closeModal"
-                    class="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"
-                >
-                    Close
-                </button>
+            <div class="mt-4 flex justify-center">
                 <button
                     v-if="confirmText"
                     @click="$emit('confirm')"
-                    class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+                    class="rounded bg-blue-950 px-4 py-2 text-xl text-white hover:bg-blue-800"
                 >
                     {{ confirmText }}
                 </button>

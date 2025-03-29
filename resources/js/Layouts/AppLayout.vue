@@ -20,7 +20,7 @@
             ></div>
             <div
                 :class="[
-                    'absolute top-[4rem] z-50',
+                    'absolute top-[4rem] z-40',
                     showYellow
                         ? 'right-[36rem] opacity-100'
                         : '-right-[10rem] opacity-0',
@@ -54,7 +54,7 @@
             ></div>
             <div
                 :class="[
-                    'absolute top-[4rem] z-50',
+                    'absolute top-[4rem] z-40',
                     !showYellow
                         ? 'left-[36rem] opacity-100'
                         : 'left-[-10rem] opacity-0',
