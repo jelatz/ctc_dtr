@@ -102,7 +102,9 @@
                 alt="Profile Picture"
                 class="h-64 w-full rounded-md bg-slate-600"
             />
-            <p class="mt-5">Employee ID</p>
+            <p class="mt-5">
+                Employee ID: <span>{{ employeeID }}</span>
+            </p>
             <p class="mt-5">Position</p>
         </div>
         <div class="w-full p-5">
@@ -136,7 +138,6 @@
     </Modal>
 </template>
 
---- ### ⚡️ **Script Section:** ```js
 <script setup>
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
@@ -160,6 +161,7 @@ const openModal = (value) => {
     buttonValue.value = value;
     showModal.value = true;
     confirmText.value = value === "Login" ? "Confirm Login" : "Confirm Logout";
+    employeeID.value = employeeID.value;
 };
 // Form validation(ensure that employeeID is not empty)
 const validateForm = () => {

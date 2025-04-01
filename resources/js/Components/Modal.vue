@@ -29,7 +29,7 @@
                 <button
                     v-if="confirmText"
                     @click="$emit('confirm')"
-                    class="rounded bg-blue-950 px-4 py-2 text-xl text-white hover:bg-blue-800"
+                    class="rounded bg-blue-950 px-4 py-2 text-xl text-white hover:bg-blue-900"
                 >
                     {{ confirmText }}
                 </button>
