@@ -14,7 +14,8 @@
                     showError ? 'border-red-600' : 'border-gray-300',
                 ]" />
                 <small v-if="showError" class="text-red-600">Please enter your Employee ID</small>
-                <button type="button" class="mt-5 mx-auto w-full bg-[#fbc04a] py-1">Submit</button>
+                <button type="button"
+                    class="mt-5 mx-auto w-full bg-[#fbc04a] py-1 cursor-pointer hover:bg-[#fbc04ad4]">Submit</button>
             </form>
         </div>
 
