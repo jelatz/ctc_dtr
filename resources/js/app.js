@@ -6,7 +6,7 @@ import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import AppLayout from "@/layouts/AppLayout.vue";
 
 createInertiaApp({
-    title: (title) => `CTC DTR  ${title}`,
+    title: (title) => `DTR  ${title}`,
     resolve: (name) => {
         const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
         const page = pages[`./Pages/${name}.vue`];
