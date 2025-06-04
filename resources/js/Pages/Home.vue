@@ -5,7 +5,7 @@
         'z-50 flex h-screen justify-between pt-80'
     ]">
         <!-- Form -->
-        <div class="z-50 w-96 ml-20 mt-5" :data-aos="'fade-right'">
+        <div class="z-50 w-96 ml-56 mt-5" :data-aos="'fade-right'">
             <p class="clock mb-10 text-center text-4xl">{{ currentTime }}</p>
             <form @submit.prevent="validateForm">
                 <label for="employeeID" class="mb-1 block">DTR ID:</label>
@@ -15,12 +15,12 @@
                 ]" />
                 <small v-if="showError" class="text-red-600">Please enter your Employee ID</small>
                 <button type="button"
-                    class="mt-5 mx-auto w-full bg-[#fbc04a] py-1 cursor-pointer hover:bg-[#fbc04ad4]">Submit</button>
+                    class="mt-5 mx-auto w-full bg-[#fbc04a] py-1 cursor-pointer hover:bg-[#fbc04ad4]" @click="openModal">Submit</button>
             </form>
         </div>
 
         <!-- Left Side (Swiper) -->
-        <div class="z-50" :data-aos="'fade-left'">
+        <div class="z-50 absolute right-5" :data-aos="'fade-left'">
             <Swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="1" :space-between="50" :loop="true"
                 :autoplay="{
                     delay: 3000,
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Modal Component -->
-    <Modal :show="showModal" :title="buttonValue" :confirmText="confirmText" @close="showModal = false"
+    <Modal :show="showModal" @close="showModal = false"
         @confirm="handleConfirm">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
             <img src="" alt="Profile Picture" class="h-64 w-full rounded-md bg-slate-600" />
@@ -95,15 +95,11 @@ const employeeID = ref("");
 const showError = ref(false);
 
 // Passing button value to modal
-const buttonValue = ref("");
 const showModal = ref(false);
-const confirmText = ref("");
 
 // Form validation and modal
 const openModal = (value) => {
-    buttonValue.value = value;
     showModal.value = true;
-    confirmText.value = value === "Login" ? "Confirm Login" : "Confirm Logout";
     employeeID.value = employeeID.value;
 };
 // Form validation(ensure that employeeID is not empty)
