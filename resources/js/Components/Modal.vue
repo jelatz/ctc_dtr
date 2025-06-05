@@ -1,11 +1,11 @@
 <template>
     <div
         v-if="show"
-        class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)]"
+        class="bg-opacity-50 mx-10justify-center fixed inset-0 z-50 flex items-center bg-[rgba(0,0,0,0.5)]"
         @click.self="closeModal"
     >
         <div
-            class="relative w-[90%] rounded-lg bg-white p-5 shadow-lg md:w-[80rem]"
+            class="relative mx-auto w-[90%] rounded-lg bg-white p-5 shadow-lg md:w-[90%]"
             data-aos="fade-up"
         >
             <!-- Modal Header -->
@@ -13,7 +13,7 @@
                 <h2 class="text-lg font-bold">{{ title }}</h2>
                 <button
                     @click="closeModal"
-                    class="text-red-500 hover:text-red-700"
+                    class="font-extrabold text-red-500 hover:text-red-700"
                 >
                     ✕
                 </button>
