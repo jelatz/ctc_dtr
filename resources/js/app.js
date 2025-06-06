@@ -5,6 +5,10 @@ import { createInertiaApp, Link, Head } from "@inertiajs/vue3";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import AppLayout from "@/layouts/AppLayout.vue";
 
+axios.defaults.headers.common["X-CSRF-TOKEN"] = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
 createInertiaApp({
     title: (title) => `DTR  ${title}`,
     resolve: (name) => {

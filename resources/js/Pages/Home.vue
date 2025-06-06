@@ -20,9 +20,9 @@
                         showError ? 'border-red-600' : 'border-gray-300',
                     ]"
                 />
-                <small v-if="showError" class="text-red-600"
-                    >Please enter your Employee ID</small
-                >
+                <small v-if="showError" class="text-red-600">{{
+                    errorMessage
+                }}</small>
                 <button
                     type="button"
                     class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
@@ -125,27 +125,45 @@ import { ref, onMounted, onUnmounted, onBeforeUnmount, nextTick } from "vue";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
+import axios from "axios";
 
 // Employee ID and error handling
 const employeeID = ref("");
 const showError = ref(false);
-
+const errorMessage = ref("");
 // Passing button value to modal
 const showModal = ref(false);
 
-// // Form validation and modal
-// const openModal = (value) => {
-//     showModal.value = true;
-//     employeeID.value = employeeID.value;
-// };
 // Form validation(ensure that employeeID is not empty)
-const validateForm = () => {
+const validateForm = async () => {
+    showError.value = false;
+    errorMessage.value = "";
+
     if (!employeeID.value) {
         showError.value = true;
-        employeeID.value = employeeID.value;
-    } else {
-        showError.value = false;
-        showModal.value = true;
+        errorMessage.value = "Please enter your Employee ID";
+        return;
+    }
+
+    try {
+        const response = await axios.post("/check-employee", {
+            employeeID: employeeID.value,
+        });
+
+        if (response.data.status === "success") {
+            showModal.value = true;
+        } else {
+            showError.value = true;
+            errorMessage.value = response.data.message || "Unknown error.";
+        }
+    } catch (error) {
+        showError.value = true;
+
+        if (error.response && error.response.data) {
+            errorMessage.value = error.response.data.message;
+        } else {
+            errorMessage.value = "Something went wrong. Please try again.";
+        }
     }
 };
 
