@@ -3,7 +3,7 @@
     <div :class="['flex h-full w-full items-center justify-center']">
         <!-- Form -->
         <div
-            class="z-50 w-96 xl:absolute xl:top-1/2 xl:left-0 xl:-mt-5 xl:ml-16 xl:inline-block xl:-translate-y-1/2"
+            class="z-50 w-96 xl:absolute xl:top-1/2 xl:left-14 xl:-mt-5 xl:ml-[5%] xl:inline-block xl:-translate-y-1/2 2xl:left-24"
             :data-aos="'fade-right'"
         >
             <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>

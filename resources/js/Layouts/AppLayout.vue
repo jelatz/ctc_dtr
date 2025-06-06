@@ -3,17 +3,17 @@
         <!-- Login -->
         <div
             :class="[
-                'absolute top-1/2 z-10 hidden h-[1200px] w-[1200px] -translate-y-1/2 rotate-[45deg] rounded-[100px] bg-[#fbc04a] xl:-right-[40rem] xl:block',
+                'absolute top-1/2 z-10 hidden h-[1200px] w-[1200px] -translate-y-1/2 rotate-[45deg] rounded-[100px] bg-[#fbc04a] xl:-right-[40rem] xl:block 2xl:-right-[25rem]',
             ]"
         ></div>
         <div
             :class="[
-                'absolute -top-[9rem] -right-[6rem] hidden h-[700px] w-[700px] rotate-[45deg] rounded-[100px] bg-[#fbc04a8c] xl:block',
+                'absolute -top-[2rem] hidden h-[700px] w-[700px] rotate-[45deg] rounded-[100px] bg-[#fbc04a8c] xl:-right-[6rem] xl:block 2xl:right-[8rem]',
             ]"
         ></div>
         <div
             :class="[
-                'absolute top-[6rem] right-[38rem] z-40 hidden opacity-100 xl:top-[8rem] xl:right-[36rem] xl:block',
+                'absolute top-[6rem] z-40 hidden opacity-100 xl:top-[14rem] xl:right-[32rem] xl:block 2xl:right-[46rem]',
             ]"
         >
             <i
