@@ -14,3 +14,5 @@ Route::get('/', function () {
 
 Route::post('/check-employee', [DtrController::class, 'checkEmployee'])
     ->name('check-employee');
+
+Route::post('/confirm-dtr', [DtrController::class, 'addDtr'])->name('confirm-dtr');

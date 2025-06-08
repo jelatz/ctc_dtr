@@ -17,18 +17,41 @@ class DtrController extends Controller
     public function checkEmployee(Request $request)
     {
         $employeeID = $request->input('employeeID');
-        $employee = $this->dtrService->checkEmployee($employeeID);
+        $employeeData = $this->dtrService->checkEmployee($employeeID);
 
-        if (!$employee) {
+        if (!$employeeData['employee']) {
+            return back()->withErrors(['employeeID' => 'Employee not found.']);
+        }
+
+        // Send the data as flash or shared props
+        return back()->with([
+            'employeeData' => $employeeData,
+        ]);
+    }
+
+
+    public function addDtr(Request $request)
+    {
+        $data = [
+            'employee_id' => $request->input('employeeID'),
+            'user_id' => $request->input('userID'), // Assuming userID is passed in the request
+            'date' => date('Y-m-d'),
+            'time_in' => date('H:i:s'), // Or 'time_out' depending on logic
+        ];
+
+        $insertDtr = $this->dtrService->addDtr($data);
+
+        if (!$insertDtr) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Employee not found',
-            ], 404);
+                'message' => 'Failed to add DTR',
+            ], 500);
         }
 
         return response()->json([
             'status' => 'success',
-            'data' => $employee,
+            'message' => 'DTR added successfully',
+            'data' => $insertDtr,
         ]);
     }
 }

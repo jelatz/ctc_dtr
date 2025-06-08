@@ -10,11 +10,18 @@ class DtrRepository
 {
     public function getByEmployeeId(string $employeeID)
     {
-        try {
-            return Dtr::where('employee_id', $employeeID)->first();
-        } catch (Exception $e) {
-            Log::error("Failed to fetch DTR for employee: {$employeeID}. Error: " . $e->getMessage());
-            return null;
-        }
+        return Dtr::where('employee_id', $employeeID)->first();
+    }
+
+    public function storeDtr(array $data)
+    {
+        return Dtr::create($data);
+    }
+
+    public function checkDtrExists(string $employeeID, string $date)
+    {
+        return Dtr::where('user_id', $employeeID)
+            ->where('date', $date)
+            ->first();
     }
 }

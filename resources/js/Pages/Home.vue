@@ -8,7 +8,7 @@
         >
             <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
             <p class="mb-10 text-center">{{ currentDateTime }}</p>
-            <form @submit.prevent="validateForm">
+            <form @submit.prevent="submitForm">
                 <label for="employeeID" class="mb-1 block">DTR ID:</label>
                 <input
                     v-model.trim="employeeID"
@@ -26,7 +26,7 @@
                 <button
                     type="button"
                     class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
-                    @click="validateForm"
+                    :disabled="formData.processing"
                 >
                     Submit
                 </button>
@@ -68,12 +68,7 @@
     </div>
 
     <!-- Modal Component -->
-    <Modal
-        :show="showModal"
-        @close="showModal = false"
-        @confirm="handleConfirm"
-        title="Login"
-    >
+    <Modal :show="showModal" @close="showModal = false" title="title">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
             <img
                 src=""
@@ -90,29 +85,34 @@
             <table class="w-full">
                 <thead class="bg-gray-200">
                     <tr class="py-2">
-                        <th class="py-2">Date</th>
+                        <th class="w-96 py-2">Schedule</th>
                         <th class="py-2">Login</th>
                         <th class="py-2">Logout</th>
                     </tr>
                 </thead>
                 <tbody class="nth-[0]-child:bg-gray-100">
-                    <tr class="text-center">
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
-                    </tr>
-                    <tr class="bg-gray-200 text-center">
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
-                    </tr>
-                    <tr class="text-center">
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
-                        <td class="py-2">data</td>
+                    <tr
+                        class="text-center"
+                        v-for="(schedule, index) in employeeSched"
+                        :key="index"
+                    >
+                        <td class="py-4">
+                            {{ schedule?.sched_start }} -
+                            {{ schedule?.sched_end }}
+                        </td>
+                        <td class="py-4">{{ employeeData?.time_in }}</td>
+                        <td class="py-4">{{ employeeData?.time_out }}</td>
                     </tr>
                 </tbody>
             </table>
+            <form @submit.prevent="confirmDtrSubmit">
+                <button
+                    type="submit"
+                    class="float-end mt-5 w-fit cursor-pointer bg-[#fbc04a] px-10 py-1 hover:bg-[#fbc04ad4]"
+                >
+                    Confirm DTR
+                </button>
+            </form>
         </div>
     </Modal>
 </template>
@@ -121,8 +121,9 @@
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { ref, onMounted, onUnmounted, onBeforeUnmount, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import AOS from "aos";
+import { useForm } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
@@ -134,42 +135,20 @@ const errorMessage = ref("");
 // Passing button value to modal
 const showModal = ref(false);
 
-// Form validation(ensure that employeeID is not empty)
-const validateForm = async () => {
-    showError.value = false;
-    errorMessage.value = "";
+// EmployeeID form
+const formData = useForm({
+    employeeID: "",
+});
 
-    if (!employeeID.value) {
-        showError.value = true;
-        errorMessage.value = "Please enter your Employee ID";
-        return;
-    }
-
-    try {
-        const response = await axios.post("/check-employee", {
-            employeeID: employeeID.value,
-        });
-
-        if (response.data.status === "success") {
-            showModal.value = true;
-        } else {
-            showError.value = true;
-            errorMessage.value = response.data.message || "Unknown error.";
-        }
-    } catch (error) {
-        showError.value = true;
-
-        if (error.response && error.response.data) {
-            errorMessage.value = error.response.data.message;
-        } else {
-            errorMessage.value = "Something went wrong. Please try again.";
-        }
-    }
-};
-
-const handleConfirm = () => {
-    alert(`Employee ID: ${employeeID.value} confirmed!`);
-    showModal.value = false;
+const submitForm = () => {
+    formData.post(route("check-employee"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            if (employeeData) {
+                showModal.value = true;
+            }
+        },
+    });
 };
 
 // Current time and date
