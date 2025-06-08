@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DtrService;
+use Inertia\Inertia;
 
 class DtrController extends Controller
 {
@@ -20,14 +21,18 @@ class DtrController extends Controller
         $employeeData = $this->dtrService->checkEmployee($employeeID);
 
         if (!$employeeData['employee']) {
-            return back()->withErrors(['employeeID' => 'Employee not found.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Employee not found.',
+            ], 404);
         }
 
-        // Send the data as flash or shared props
-        return back()->with([
+        return response()->json([
+            'success' => true,
             'employeeData' => $employeeData,
         ]);
     }
+
 
 
     public function addDtr(Request $request)

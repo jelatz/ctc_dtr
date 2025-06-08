@@ -11,7 +11,7 @@
             <form @submit.prevent="submitForm">
                 <label for="employeeID" class="mb-1 block">DTR ID:</label>
                 <input
-                    v-model.trim="employeeID"
+                    v-model.trim="formData.employeeID"
                     type="text"
                     id="employeeID"
                     placeholder="Enter Employee ID"
@@ -24,7 +24,6 @@
                     errorMessage
                 }}</small>
                 <button
-                    type="button"
                     class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
                     :disabled="formData.processing"
                 >
@@ -76,7 +75,8 @@
                 class="h-64 w-full rounded-md bg-slate-600"
             />
             <p class="mt-3 w-full text-left">
-                Employee ID: <span>{{ employeeID }}</span>
+                Employee ID:
+                <span>{{ employeeData?.employee_id }}</span>
             </p>
             <p class="mt-2 w-full text-left">Position</p>
         </div>
@@ -96,12 +96,12 @@
                         v-for="(schedule, index) in employeeSched"
                         :key="index"
                     >
-                        <td class="py-4">
+                        <td class="py-3">
                             {{ schedule?.sched_start }} -
                             {{ schedule?.sched_end }}
                         </td>
-                        <td class="py-4">{{ employeeData?.time_in }}</td>
-                        <td class="py-4">{{ employeeData?.time_out }}</td>
+                        <td class="py-3">{{ employeeData?.time_in }}</td>
+                        <td class="py-3">{{ employeeData?.time_out }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -121,15 +121,14 @@
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import AOS from "aos";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 
 // Employee ID and error handling
-const employeeID = ref("");
 const showError = ref(false);
 const errorMessage = ref("");
 // Passing button value to modal
@@ -138,17 +137,43 @@ const showModal = ref(false);
 // EmployeeID form
 const formData = useForm({
     employeeID: "",
+    processing: false,
 });
 
-const submitForm = () => {
-    formData.post(route("check-employee"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            if (employeeData) {
-                showModal.value = true;
-            }
-        },
-    });
+const employeeData = ref({});
+const employeeSched = ref([]);
+
+const submitForm = async () => {
+    if (!formData.employeeID) {
+        showError.value = true;
+        errorMessage.value = "Employee ID is required.";
+        return;
+    }
+
+    showError.value = false;
+    errorMessage.value = "";
+    formData.processing = true;
+
+    try {
+        const response = await axios.post(route("check-employee"), {
+            employeeID: formData.employeeID,
+        });
+
+        if (response.data.success) {
+            employeeData.value = response.data.employeeData.employee;
+            employeeSched.value = response.data.employeeData.schedules || [];
+            showModal.value = true;
+        } else {
+            showError.value = true;
+            errorMessage.value = response.data.message || "Unknown error.";
+        }
+    } catch (error) {
+        showError.value = true;
+        errorMessage.value =
+            error.response?.data?.message || "An unexpected error occurred.";
+    } finally {
+        formData.processing = false;
+    }
 };
 
 // Current time and date
