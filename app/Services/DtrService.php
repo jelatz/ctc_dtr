@@ -33,18 +33,15 @@ class DtrService
         $userID = $data['user_id'];
         $date = date('Y-m-d');
         dd($data);
-        // Step 1: Check if DTR already exists for today
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $date);
 
         $time = date('H:i:s');
 
         if ($existingDtr) {
-            // Step 2: Update time_out if already logged in
             $existingDtr->time_out = $time;
             $existingDtr->save();
             return $existingDtr;
         } else {
-            // Step 3: Create new record with time_in
             return $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
                 'user_id' => $userID,
