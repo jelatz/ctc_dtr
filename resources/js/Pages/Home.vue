@@ -67,7 +67,7 @@
     </div>
 
     <!-- Modal Component -->
-    <Modal :show="showModal" @close="showModal = false" title="title">
+    <Modal :show="showModal" @close="showModal = false" modalTitle="modalTitle">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
             <img
                 src=""
@@ -121,17 +121,19 @@
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import AOS from "aos";
 import { useForm, usePage } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 // Employee ID and error handling
 const showError = ref(false);
 const errorMessage = ref("");
-// Passing button value to modal
+
+// modal current state
 const showModal = ref(false);
 
 // EmployeeID form
@@ -142,6 +144,7 @@ const formData = useForm({
 
 const employeeData = ref({});
 const employeeSched = ref([]);
+defineProps(["errors"]); // or defineProps({ errors: Object })
 
 const submitForm = async () => {
     if (!formData.employeeID) {
@@ -158,16 +161,13 @@ const submitForm = async () => {
         const response = await axios.post(route("check-employee"), {
             employeeID: formData.employeeID,
         });
-
         if (response.data.success) {
             employeeData.value = response.data.employeeData.employee;
             employeeSched.value = response.data.employeeData.schedules || [];
             showModal.value = true;
-        } else {
-            showError.value = true;
-            errorMessage.value = response.data.message || "Unknown error.";
         }
     } catch (error) {
+        formData.reset();
         showError.value = true;
         errorMessage.value =
             error.response?.data?.message || "An unexpected error occurred.";
@@ -176,10 +176,43 @@ const submitForm = async () => {
     }
 };
 
+// Confirm DTR submission
+const confirmDtrSubmitForm = useForm({
+    employee_id: "",
+});
+const confirmDtrSubmit = () => {
+    confirmDtrSubmitForm.employee_id = employeeData.value.employee_id;
+    confirmDtrSubmitForm.post(route("confirm-dtr"), {
+        onSuccess: () => {
+            Swal.fire({
+                title: "Success",
+                text: "DTR confirmed successfully!",
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(() => {
+                showModal.value = false;
+                formData.reset();
+            });
+        },
+        onError: (error) => {
+            Swal.fire({
+                title: "Error",
+                text: error?.error,
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        },
+        onFinish: () => {
+            confirmDtrSubmitForm.reset();
+        },
+    });
+};
+
 // Current time and date
 const currentTime = ref(
     new Date(new Date().getTime() + 5 * 60000).toLocaleTimeString(),
 );
+
 const currentDateTime = ref("");
 
 const formatDate = () => {
@@ -217,8 +250,8 @@ const formatDate = () => {
 };
 
 // Initialize the date
-formatDate();
 let clockInterval = null;
+formatDate();
 
 onMounted(() => {
     AOS.init({
@@ -231,6 +264,7 @@ onMounted(() => {
         currentTime.value = new Date(
             new Date().getTime() + 5 * 60000,
         ).toLocaleTimeString();
+        formatDate();
     }, 1000);
 });
 

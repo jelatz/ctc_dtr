@@ -27,27 +27,18 @@ class DtrService
         ];
     }
 
-    public function addDtr(array $data)
+    public function checkLatestDTR(string $employeeID)
     {
-        $employeeID = $data['employee_id']; // or 'employee_id'
-        $userID = $data['user_id'];
-        $date = date('Y-m-d');
-        dd($data);
-        $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $date);
-
-        $time = date('H:i:s');
-
-        if ($existingDtr) {
-            $existingDtr->time_out = $time;
-            $existingDtr->save();
-            return $existingDtr;
-        } else {
-            return $this->dtrRepository->storeDtr([
+        if (!$this->dtrRepository->checkDtrExists($employeeID)) {
+            $this->dtrRepository->storeDtr([
+                'user_id' => '111',
                 'employee_id' => $employeeID,
-                'user_id' => $userID,
-                'date' => $date,
-                'time_in' => $time,
+                'name' => 'lad',
+                'department' => 'ITDEV',
+                'date' => date('Y-m-d'),
+                'time_in' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
             ]);
-        }
+            return true;
+        };
     }
 }

@@ -10,7 +10,7 @@ use App\Http\Controllers\DtrController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
-});
+})->name('homepage');
 
 Route::post('/check-employee', [DtrController::class, 'checkEmployee'])
     ->name('check-employee');

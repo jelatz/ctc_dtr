@@ -33,30 +33,12 @@ class DtrController extends Controller
         ]);
     }
 
-
-
     public function addDtr(Request $request)
     {
-        $data = [
-            'employee_id' => $request->input('employeeID'),
-            'user_id' => $request->input('userID'), // Assuming userID is passed in the request
-            'date' => date('Y-m-d'),
-            'time_in' => date('H:i:s'), // Or 'time_out' depending on logic
-        ];
-
-        $insertDtr = $this->dtrService->addDtr($data);
-
-        if (!$insertDtr) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to add DTR',
-            ], 500);
+        $employeeID = $request->input('employee_id');
+        if ($this->dtrService->checkLatestDTR($employeeID)) {
+            return redirect()->back()->with('success', 'DTR successfully added for today.');
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'DTR added successfully',
-            'data' => $insertDtr,
-        ]);
+        return redirect()->back()->withErrors(['error' => 'DTR already exists for today.']);
     }
 }

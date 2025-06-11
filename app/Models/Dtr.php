@@ -17,5 +17,8 @@ class Dtr extends Model
         'time_in',
         'time_out',
         'status',
+        'employee_id',
+        'name',
+        'department',
     ];
 }
