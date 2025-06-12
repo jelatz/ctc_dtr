@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
             $table->string('employee_id');
+            $table->enum('day_type', ['working', 'holiday', 'dayoff']);
             $table->date('sched_date');
             $table->datetime('sched_start');
             $table->datetime('sched_end');

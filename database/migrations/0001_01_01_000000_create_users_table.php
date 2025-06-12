@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // Primary Key
             $table->foreignId('user_id')->constrained()->unique(); // Foreign Key
+            $table->string('employee_id'); // Employee ID
+            $table->string('name'); // Employee Name
             $table->dateTime('time_in'); // DateTime for login
             $table->dateTime('time_out'); // DateTime for logout
             $table->timestamps(); // Created_at & Updated_at

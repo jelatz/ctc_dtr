@@ -85,6 +85,7 @@
             <table class="w-full">
                 <thead class="bg-gray-200">
                     <tr class="py-2">
+                        <th class="w-32 py-2">Date</th>
                         <th class="w-96 py-2">Schedule</th>
                         <th class="py-2">Login</th>
                         <th class="py-2">Logout</th>
@@ -97,9 +98,9 @@
                         :key="index"
                     >
                         <td class="py-3">
-                            {{ schedule?.sched_start }} -
-                            {{ schedule?.sched_end }}
+                            {{ convertToLocalDate(schedule?.sched_date) }}
                         </td>
+                        <td class="py-3">{{ employeeData?.time_in }}</td>
                         <td class="py-3">{{ employeeData?.time_in }}</td>
                         <td class="py-3">{{ employeeData?.time_out }}</td>
                     </tr>
@@ -128,6 +129,7 @@ import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { dateFormat, convertToLocalDate } from "@/utils/date";
 
 // Employee ID and error handling
 const showError = ref(false);
@@ -140,6 +142,7 @@ const showModal = ref(false);
 const formData = useForm({
     employeeID: "",
     processing: false,
+    timezone: "",
 });
 
 const employeeData = ref({});
@@ -160,7 +163,9 @@ const submitForm = async () => {
     try {
         const response = await axios.post(route("check-employee"), {
             employeeID: formData.employeeID,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
+        console.log(response.data);
         if (response.data.success) {
             employeeData.value = response.data.employeeData.employee;
             employeeSched.value = response.data.employeeData.schedules || [];
@@ -179,9 +184,12 @@ const submitForm = async () => {
 // Confirm DTR submission
 const confirmDtrSubmitForm = useForm({
     employee_id: "",
+    timezone: "",
 });
 const confirmDtrSubmit = () => {
     confirmDtrSubmitForm.employee_id = employeeData.value.employee_id;
+    confirmDtrSubmitForm.timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: () => {
             Swal.fire({

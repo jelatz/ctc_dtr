@@ -18,11 +18,11 @@ class DtrRepository
         return Dtr::create($data);
     }
 
-    public function checkDtrExists(string $employeeID)
+    public function checkDtrExists(string $employeeID, $schedDate)
     {
         return Dtr::where('employee_id', $employeeID)
             ->latest()
-            ->where('date', '2025-06-12')
+            ->where('date', $schedDate)
             ->first();
     }
 }

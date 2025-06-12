@@ -4,32 +4,44 @@ namespace App\Services;
 
 use App\Repositories\DtrRepository;
 use App\Repositories\ScheduleRepository;
+use App\Repositories\UserRepository;
 
 class DtrService
 {
     protected $dtrRepository;
     protected $scheduleRepository;
+    protected $userRepository;
 
-    public function __construct(DtrRepository $dtrRepository, ScheduleRepository $scheduleRepository)
+    public function __construct(DtrRepository $dtrRepository, ScheduleRepository $scheduleRepository, UserRepository $userRepository)
     {
         $this->scheduleRepository = $scheduleRepository;
         $this->dtrRepository = $dtrRepository;
+        $this->userRepository = $userRepository;
     }
 
-    public function checkEmployee($employeeID)
+    public function checkEmployee($employeeID, $timezone)
     {
-        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID);
-        $employee = $this->dtrRepository->getByEmployeeId($employeeID);
+        $employee = $this->userRepository->checkEmployee($employeeID);
+
+        if (!$employee) {
+            return;
+        }
+
+        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone);
+
+        $employeeDtr = $this->dtrRepository->getByEmployeeId($employeeID);
 
         return [
-            'employee' => $employee,
-            'schedules' => $schedules
+            'employee' => $employee,         // actual employee info
+            'schedules' => $schedules,       // last 5 schedules
+            'dtr' => $employeeDtr            // daily time records
         ];
     }
 
-    public function checkLatestDTR(string $employeeID)
+
+    public function checkLatestDTR(string $employeeID, $schedDate)
     {
-        if (!$this->dtrRepository->checkDtrExists($employeeID)) {
+        if (!$this->dtrRepository->checkDtrExists($employeeID, $schedDate)) {
             $this->dtrRepository->storeDtr([
                 'user_id' => '111',
                 'employee_id' => $employeeID,
