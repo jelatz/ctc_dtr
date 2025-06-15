@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
 class Dtr extends Model
@@ -12,7 +13,6 @@ class Dtr extends Model
     protected $table = 'dtr';
 
     protected $fillable = [
-        'user_id',
         'date',
         'time_in',
         'time_out',
@@ -21,4 +21,9 @@ class Dtr extends Model
         'name',
         'department',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id', 'employee_id');
+    }
 }

@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('dtr', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('employee_id', 50);
-            $table->string('name', 100);
-            $table->string('department', 100);
-            $table->date('date');
-            $table->time('time_in')->nullable();
-            $table->time('time_out')->nullable();
+            $table->string('employee_id');
+            $table->datetime('time_in')->nullable();
+            $table->datetime('time_out')->nullable();
             $table->timestamps();
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreign('employee_id')->references('employee_id')->on('users')->onDelete('cascade');
         });
     }
 

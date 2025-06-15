@@ -29,28 +29,22 @@ class DtrService
 
         $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone);
 
-        $employeeDtr = $this->dtrRepository->getByEmployeeId($employeeID);
-
         return [
-            'employee' => $employee,         // actual employee info
-            'schedules' => $schedules,       // last 5 schedules
-            'dtr' => $employeeDtr            // daily time records
+            'schedules' => $schedules,
         ];
     }
 
 
-    public function checkLatestDTR(string $employeeID, $schedDate)
+    public function logDTR(string $employeeID)
     {
-        if (!$this->dtrRepository->checkDtrExists($employeeID, $schedDate)) {
+        if (!$this->dtrRepository->checkDtrExists($employeeID)) {
             $this->dtrRepository->storeDtr([
-                'user_id' => '111',
                 'employee_id' => $employeeID,
-                'name' => 'lad',
-                'department' => 'ITDEV',
-                'date' => date('Y-m-d'),
                 'time_in' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
             ]);
             return true;
-        };
+        }
+
+        return false;
     }
 }

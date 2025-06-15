@@ -19,6 +19,8 @@ return new class extends Migration
             $table->datetime('sched_start');
             $table->datetime('sched_end');
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('employee_id')->on('users')->onDelete('cascade');
         });
     }
 

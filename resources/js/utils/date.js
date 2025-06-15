@@ -1,4 +1,4 @@
-export function dateFormat(datetime) {
+export function time(datetime) {
     if (!datetime) return "";
     const d = new Date(datetime);
     return d.toLocaleTimeString([], {

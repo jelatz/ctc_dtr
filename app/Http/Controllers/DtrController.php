@@ -22,11 +22,8 @@ class DtrController extends Controller
         $employeeID = $request->input('employeeID');
         $timezone = $request->input('timezone');
 
-        // dd($employeeID, $timezone);
-
         $employeeData = $this->dtrService->checkEmployee($employeeID, $timezone);
-
-        if (!$employeeData || !$employeeData['employee']) {
+        if (!$employeeData) {
             return response()->json([
                 'success' => false,
                 'message' => 'Employee not found.',
@@ -43,10 +40,8 @@ class DtrController extends Controller
     public function addDtr(Request $request)
     {
         $employeeID = $request->input('employee_id');
-        $schedDate = $request->input('sched_date');
-        if ($this->dtrService->checkLatestDTR($employeeID, $schedDate)) {
-            return redirect()->back()->with('success', 'DTR successfully added for today.');
-        }
-        return redirect()->back()->withErrors(['error' => 'DTR already exists for today.']);
+        $this->dtrService->logDTR($employeeID);
+
+        return redirect()->back()->with('success', 'DTR successfully added for today.');
     }
 }

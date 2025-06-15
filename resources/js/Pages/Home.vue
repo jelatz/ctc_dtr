@@ -76,7 +76,7 @@
             />
             <p class="mt-3 w-full text-left">
                 Employee ID:
-                <span>{{ employeeData?.employee_id }}</span>
+                <span>{{ employeeData[0]?.employee_id }}</span>
             </p>
             <p class="mt-2 w-full text-left">Position</p>
         </div>
@@ -94,15 +94,18 @@
                 <tbody class="nth-[0]-child:bg-gray-100">
                     <tr
                         class="text-center"
-                        v-for="(schedule, index) in employeeSched"
+                        v-for="(schedule, index) in employeeData"
                         :key="index"
                     >
                         <td class="py-3">
                             {{ convertToLocalDate(schedule?.sched_date) }}
                         </td>
-                        <td class="py-3">{{ employeeData?.time_in }}</td>
-                        <td class="py-3">{{ employeeData?.time_in }}</td>
-                        <td class="py-3">{{ employeeData?.time_out }}</td>
+                        <td class="py-3">
+                            {{ time(schedule?.sched_start) }} -
+                            {{ time(schedule?.sched_end) }}
+                        </td>
+                        <td class="py-3">{{ time(schedule?.dtr?.time_in) }}</td>
+                        <td class="py-3">{{ schedule?.time_out }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -129,7 +132,7 @@ import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { dateFormat, convertToLocalDate } from "@/utils/date";
+import { time, convertToLocalDate } from "@/utils/date";
 
 // Employee ID and error handling
 const showError = ref(false);
@@ -146,7 +149,6 @@ const formData = useForm({
 });
 
 const employeeData = ref({});
-const employeeSched = ref([]);
 defineProps(["errors"]); // or defineProps({ errors: Object })
 
 const submitForm = async () => {
@@ -165,10 +167,10 @@ const submitForm = async () => {
             employeeID: formData.employeeID,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
-        console.log(response.data);
+        console.log(response.data.employeeData.schedules);
         if (response.data.success) {
-            employeeData.value = response.data.employeeData.employee;
-            employeeSched.value = response.data.employeeData.schedules || [];
+            employeeData.value = response.data.employeeData.schedules || [];
+            // console.log(employeeData.value.employee_id);
             showModal.value = true;
         }
     } catch (error) {
@@ -187,9 +189,8 @@ const confirmDtrSubmitForm = useForm({
     timezone: "",
 });
 const confirmDtrSubmit = () => {
-    confirmDtrSubmitForm.employee_id = employeeData.value.employee_id;
-    confirmDtrSubmitForm.timezone =
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
+    confirmDtrSubmitForm.employee_id = employeeData.value[0].employee_id;
+    console.log(confirmDtrSubmitForm.employee_id);
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: () => {
             Swal.fire({

@@ -8,12 +8,12 @@
         ></div>
         <div
             :class="[
-                'absolute -top-[2rem] hidden h-[700px] w-[700px] rotate-[45deg] rounded-[100px] bg-[#fbc04a8c] xl:-right-[6rem] xl:block 2xl:right-[8rem]',
+                'absolute -top-[2rem] hidden h-[700px] w-[700px] rotate-[45deg] rounded-[100px] bg-[#fbc04a8c] xl:-top-[6rem] xl:-right-[6rem] xl:block 2xl:right-[8rem]',
             ]"
         ></div>
         <div
             :class="[
-                'absolute top-[6rem] z-40 hidden opacity-100 xl:top-[14rem] xl:right-[32rem] xl:block 2xl:right-[46rem]',
+                'absolute top-[6rem] z-40 hidden rotate-[180deg] opacity-100 xl:top-[10rem] xl:right-[32rem] xl:block 2xl:right-[46rem]',
             ]"
         >
             <i
