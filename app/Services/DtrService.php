@@ -37,7 +37,13 @@ class DtrService
 
     public function logDTR(string $employeeID)
     {
-        if (!$this->dtrRepository->checkDtrExists($employeeID)) {
+        $dtr = $this->dtrRepository->checkDtrExists($employeeID);
+        if ($dtr && $dtr->time_in) {
+            return $this->dtrRepository->storeDtr([$employeeID]);
+        }
+
+        if ($dtr) {
+
             $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
                 'time_in' => date('Y-m-d H:i:s', strtotime('+5 minutes')),

@@ -24,8 +24,6 @@ class DtrRepository
     public function checkDtrExists(string $employeeID)
     {
         return Dtr::where('employee_id', $employeeID)
-            ->where('time_in', '!=', null)
-            ->orWhere('time_out', '!=', null)
             ->latest()
             ->orderBy('created_at', 'desc')
             ->first();

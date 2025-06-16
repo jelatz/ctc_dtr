@@ -11,6 +11,6 @@ class UserRepository
 
     public function checkEmployee(string $employeeID)
     {
-        return User::where('employee_id', $employeeID)->first();
+        return User::select('employee_id', 'name')->where('employee_id', $employeeID)->first();
     }
 }
