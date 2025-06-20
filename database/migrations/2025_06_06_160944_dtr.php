@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('dtr', function (Blueprint $table) {
             $table->id();
             $table->string('employee_id');
+            $table->date('dtr_date');
             $table->datetime('time_in')->nullable();
             $table->datetime('time_out')->nullable();
             $table->timestamps();

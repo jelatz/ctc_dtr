@@ -10,7 +10,7 @@ axios.defaults.headers.common["X-CSRF-TOKEN"] = document
     .getAttribute("content");
 
 createInertiaApp({
-    title: (title) => `DTR  ${title}`,
+    title: (title) => `Calltek DTR  ${title}`,
     resolve: (name) => {
         const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
         const page = pages[`./Pages/${name}.vue`];

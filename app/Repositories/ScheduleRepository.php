@@ -10,20 +10,20 @@ use Carbon\Carbon;
 
 class ScheduleRepository
 {
-    public function getLastFiveSchedule(string $employeeID, string $timezone = 'UTC')
+    public function getLastFiveSchedule(string $employeeID, string $timezone = 'Asia/Manila', $addOneDay = false)
     {
         try {
-            $localToday = Carbon::now($timezone)->toDateString();
-            // return Schedule::with('dtr')->with('user')
-            //     ->where('employee_id', $employeeID)
-            //     ->where('sched_date', '<=', $localToday)
-            //     ->orderByDesc('sched_date')
-            //     ->orderByDesc('start_time')
-            //     ->limit(5)
-            //     ->get();
+            $localToday = Carbon::now($timezone);
+
+            if ($addOneDay) {
+                $localToday = $localToday->addDay();
+            }
+
+            $dateString = $localToday->toDateString();
+
             $schedules = Schedule::with('user')
                 ->where('employee_id', $employeeID)
-                ->where('sched_date', '<=', $localToday)
+                ->where('sched_date', '<=', $dateString)
                 ->orderByDesc('sched_date')
                 ->orderByDesc('start_time')
                 ->limit(5)
@@ -31,7 +31,7 @@ class ScheduleRepository
 
             // Attach the correct DTR based on employee_id + time_in = sched_date
             $schedules->each(function ($schedule) {
-                $schedule->setRelation('dtr', $schedule->dtr()->whereDate('time_in', $schedule->sched_date)->first());
+                $schedule->setRelation('dtr', $schedule->dtr()->where('dtr_date', $schedule->sched_date)->first());
             });
 
             return $schedules;

@@ -27,7 +27,9 @@ class DtrService
             return;
         }
 
-        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone);
+        $dtrData = $this->dtrRepository->checkDtrExists($employeeID);
+        $addOneDay = $dtrData && $dtrData->time_in && $dtrData->time_out;
+        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
 
         return [
             'schedules' => $schedules,
@@ -35,22 +37,27 @@ class DtrService
     }
 
 
-    public function logDTR(string $employeeID)
+
+    public function logDTR(string $employeeID, $dtrDate)
     {
-        $dtr = $this->dtrRepository->checkDtrExists($employeeID);
-        if ($dtr && $dtr->time_in) {
-            return $this->dtrRepository->storeDtr([$employeeID]);
-        }
-
-        if ($dtr) {
-
+        $hasDtrData = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
+        if (!$hasDtrData) {
             $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
-                'time_in' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
+                'dtr_date' => $dtrDate,
+                'time_in' => $dtrDate . ' ' . now()->format('H:i:s'),
+                'time_out' => null,
             ]);
             return true;
         }
 
-        return false;
+        if ($hasDtrData->time_in) {
+            $this->dtrRepository->updateDtr([
+                'employee_id' => $employeeID,
+                'dtr_date' => $dtrDate,
+                'time_out' => $dtrDate . ' ' . now()->format('H:i:s'),
+            ]);
+            return true;
+        }
     }
 }

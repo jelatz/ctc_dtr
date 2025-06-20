@@ -12,7 +12,7 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('homepage');
 
-Route::post('/check-employee', [DtrController::class, 'checkEmployee'])
-    ->name('check-employee');
+Route::post('/get-schedules', [DtrController::class, 'getSchedules'])
+    ->name('get-schedules');
 
 Route::post('/confirm-dtr', [DtrController::class, 'addDtr'])->name('confirm-dtr');

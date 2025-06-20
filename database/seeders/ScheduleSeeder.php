@@ -11,7 +11,7 @@ class ScheduleSeeder extends Seeder
 {
     public function run(): void
     {
-        $employeeId = '111-111';
+        $employeeId = '1-1';
         $year = now()->year;
 
         for ($day = 1; $day <= 30; $day++) {

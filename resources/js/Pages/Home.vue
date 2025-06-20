@@ -11,6 +11,7 @@
             <form @submit.prevent="submitForm">
                 <label for="employeeID" class="mb-1 block">DTR ID:</label>
                 <input
+                    ref="employeeIDInput"
                     v-model.trim="formData.employeeID"
                     type="text"
                     id="employeeID"
@@ -105,7 +106,9 @@
                             {{ time(schedule?.sched_end) }}
                         </td>
                         <td class="py-3">{{ time(schedule?.dtr?.time_in) }}</td>
-                        <td class="py-3">{{ schedule?.time_out }}</td>
+                        <td class="py-3">
+                            {{ time(schedule?.dtr?.time_out) }}
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -125,7 +128,7 @@
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import AOS from "aos";
 import { useForm, usePage } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
@@ -138,8 +141,39 @@ import { time, convertToLocalDate } from "@/utils/date";
 const showError = ref(false);
 const errorMessage = ref("");
 
+const employeeIDInput = ref(null);
+
 // modal current state
 const showModal = ref(false);
+
+onMounted(() => {
+    setTimeout(() => {
+        employeeIDInput.value?.focus();
+    }, 300);
+});
+
+watch(showModal, (isOpen) => {
+    if (!isOpen) {
+        setTimeout(() => {
+            employeeIDInput.value?.focus();
+        }, 300);
+    }
+});
+
+// Close modal with ESC key
+const handleEscKey = (e) => {
+    if (e.key === "Escape" && showModal.value) {
+        showModal.value = false;
+    }
+};
+
+onMounted(() => {
+    window.addEventListener("keydown", handleEscKey);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("keydown", handleEscKey);
+});
 
 // EmployeeID form
 const formData = useForm({
@@ -163,11 +197,11 @@ const submitForm = async () => {
     formData.processing = true;
 
     try {
-        const response = await axios.post(route("check-employee"), {
+        const response = await axios.post(route("get-schedules"), {
             employeeID: formData.employeeID,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
-        console.log(response.data.employeeData.schedules);
+        // console.log(response.data);
         if (response.data.success) {
             employeeData.value = response.data.employeeData.schedules || [];
             // console.log(employeeData.value.employee_id);
@@ -187,10 +221,11 @@ const submitForm = async () => {
 const confirmDtrSubmitForm = useForm({
     employee_id: "",
     timezone: "",
+    dtrDate: "",
 });
 const confirmDtrSubmit = () => {
     confirmDtrSubmitForm.employee_id = employeeData.value[0].employee_id;
-    console.log(confirmDtrSubmitForm.employee_id);
+    confirmDtrSubmitForm.dtrDate = employeeData.value[0].sched_date;
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: () => {
             Swal.fire({
@@ -201,6 +236,7 @@ const confirmDtrSubmit = () => {
             }).then(() => {
                 showModal.value = false;
                 formData.reset();
+                document.getQuerySelector("#employeeID").css("focus", true);
             });
         },
         onError: (error) => {

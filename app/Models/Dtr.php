@@ -13,7 +13,7 @@ class Dtr extends Model
     protected $table = 'dtr';
 
     protected $fillable = [
-        'date',
+        'dtr_date',
         'time_in',
         'time_out',
         'status',

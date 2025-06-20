@@ -17,7 +17,7 @@ class DtrController extends Controller
         $this->dtrService = $dtrService;
     }
 
-    public function checkEmployee(Request $request)
+    public function getSchedules(Request $request)
     {
         $employeeID = $request->input('employeeID');
         $timezone = $request->input('timezone');
@@ -40,8 +40,8 @@ class DtrController extends Controller
     public function addDtr(Request $request)
     {
         $employeeID = $request->input('employee_id');
-        $this->dtrService->logDTR($employeeID);
-
+        $dtrDate = $request->input('dtrDate');
+        $this->dtrService->logDTR($employeeID, $dtrDate);
         return redirect()->back()->with('success', 'DTR successfully added for today.');
     }
 }
