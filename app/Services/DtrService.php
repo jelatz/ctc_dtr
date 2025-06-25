@@ -99,7 +99,9 @@ class DtrService
         $url = env('QIS_API_URL');
 
         try {
-            $response = Http::get($url, $params);
+            $response = Http::withHeaders([
+                'X-API-KEY' => env('QIS_API_KEY'),
+            ])->get($url, $params);
             return $response->json();
         } catch (\Exception $e) {
             Log::error("Failed to contact QIS API. Error: {$e->getMessage()}");
