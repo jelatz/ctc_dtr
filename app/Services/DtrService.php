@@ -49,6 +49,17 @@ class DtrService
 
     public function getSchedules(string $employeeID, string $timezone, bool $addOneDay = false)
     {
+        $currentSchedule = $this->scheduleRepository->getCurrentSchedule($employeeID);
+        $timeIn = date('Y-m-d', strtotime($currentSchedule->sched_start));
+        $timeOut = date('Y-m-d', strtotime($currentSchedule->sched_end));
+
+        if ($timeOut > $timeIn) {
+            dd("yes");
+        }
+
+        // check latest dtr data if there's login / logout
+        $dtrData = $this->dtrRepository->checkDtrExists($employeeID);
+        $addOneDay = $dtrData ? true : false;
 
         $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
 
