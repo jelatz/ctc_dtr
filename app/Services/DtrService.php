@@ -24,49 +24,71 @@ class DtrService
         $this->userRepository = $userRepository;
     }
 
-    public function checkEmployee(string $employeeID, string $timezone): ?array
+    public function checkEmployee(string $employeeID, string $timezone)
     {
-        $employee = $this->fetchFromQisApi(['check_employee' => $employeeID]);
+        // $employee = $this->fetchFromQisApi(['check_employee' => $employeeID]);
 
-        if (!$employee || empty($employee['success'])) {
-            Log::error("Employee not found in QIS API for ID: {$employeeID}. Response: " . json_encode($employee));
+        // if (!$employee || empty($employee['success'])) {
+        //     Log::error("Employee not found in QIS API for ID: {$employeeID}. Response: " . json_encode($employee));
+        //     return null;
+        // }
+
+        // $addOneDay = $this->checkDtr($employeeID);
+        // $schedules = $this->getSchedules($employeeID, $timezone, $addOneDay);
+
+        $employee = $this->userRepository->checkEmployee($employeeID);
+
+        if (!$employee) {
+            Log::error("Employee not found in local database for ID: {$employeeID}");
             return null;
-        }
+        };
 
-        $addOneDay = $this->checkDtr($employeeID);
-        $schedules = $this->getSchedules($employeeID, $timezone, $addOneDay);
-
-        return ['schedules' => $schedules];
+        return $employee;
     }
 
-    public function checkDtr(string $employeeID): bool
+
+    public function getSchedules(string $employeeID, string $timezone, bool $addOneDay = false)
     {
-        $dtrData = $this->fetchFromQisApi(['check_dtr' => $employeeID]);
 
-        if (!$dtrData || empty($dtrData['success'])) {
-            Log::error("DTR not found in QIS API for ID: {$employeeID}. Response: " . json_encode($dtrData));
-            return false;
+        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
+
+        if ($schedules->isEmpty()) {
+            Log::error("No schedules found for employee ID: {$employeeID}");
+            return [];
         }
 
-        return !empty($dtrData['time_in']) && !empty($dtrData['time_out']);
+        return $schedules;
     }
 
-    public function getSchedules(string $employeeID, $timezone, $addOneDay)
-    {
-        $scheduleData = $this->fetchFromQisApi(['check_schedule' => $employeeID, 'timezone' => $timezone, 'add_one_day' => $addOneDay]);
+    // public function checkDtr(string $employeeID): bool
+    // {
+    //     $dtrData = $this->fetchFromQisApi(['check_dtr' => $employeeID]);
 
-        if (!$scheduleData || empty($scheduleData['success'])) {
-            Log::error("Schedules not found in QIS API for ID: {$employeeID}. Response: " . json_encode($scheduleData));
-            return null;
-        }
+    //     if (!$dtrData || empty($dtrData['success'])) {
+    //         Log::error("DTR not found in QIS API for ID: {$employeeID}. Response: " . json_encode($dtrData));
+    //         return false;
+    //     }
 
-        return $scheduleData['schedules'] ?? [];
-    }
+    //     return !empty($dtrData['time_in']) && !empty($dtrData['time_out']);
+    // }
+
+    // public function getSchedules(string $employeeID, $timezone, $addOneDay)
+    // {
+    //     $scheduleData = $this->fetchFromQisApi(['check_schedule' => $employeeID, 'timezone' => $timezone, 'add_one_day' => $addOneDay]);
+
+    //     if (!$scheduleData || empty($scheduleData['success'])) {
+    //         Log::error("Schedules not found in QIS API for ID: {$employeeID}. Response: " . json_encode($scheduleData));
+    //         return null;
+    //     }
+
+    //     return $scheduleData['schedules'] ?? [];
+    // }
 
     public function logDTR(string $employeeID, string $dtrDate): bool
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
-        $nowTime = now()->format('H:i:s');
+        $nowTime = now()->addMinutes(5)->format('H:i:s');
+
 
         if (!$existingDtr) {
             $this->dtrRepository->storeDtr([
@@ -86,26 +108,25 @@ class DtrService
             ]);
             return true;
         }
-
         return false;
     }
 
     /**
      * Send GET request to QIS API and return decoded JSON.
      */
-    private function fetchFromQisApi(array $params): ?array
-    {
-        $params['api_key'] = env('QIS_API_KEY');
-        $url = env('QIS_API_URL');
+    // private function fetchFromQisApi(array $params): ?array
+    // {
+    //     $params['api_key'] = env('QIS_API_KEY');
+    //     $url = env('QIS_API_URL');
 
-        try {
-            $response = Http::withHeaders([
-                'X-API-KEY' => env('QIS_API_KEY'),
-            ])->get($url, $params);
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error("Failed to contact QIS API. Error: {$e->getMessage()}");
-            return null;
-        }
-    }
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'X-API-KEY' => env('QIS_API_KEY'),
+    //         ])->get($url, $params);
+    //         return $response->json();
+    //     } catch (\Exception $e) {
+    //         Log::error("Failed to contact QIS API. Error: {$e->getMessage()}");
+    //         return null;
+    //     }
+    // }
 }

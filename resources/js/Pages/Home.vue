@@ -77,7 +77,7 @@
             />
             <p class="mt-3 w-full text-left">
                 Employee ID:
-                <span>{{ employeeData[0]?.employee_id }}</span>
+                <span>{{ employeeData?.employee_id }}</span>
             </p>
             <p class="mt-2 w-full text-left">Position</p>
         </div>
@@ -95,7 +95,7 @@
                 <tbody class="nth-[0]-child:bg-gray-100">
                     <tr
                         class="text-center"
-                        v-for="(schedule, index) in employeeData"
+                        v-for="(schedule, index) in scheduleData"
                         :key="index"
                     >
                         <td class="py-3">
@@ -183,6 +183,7 @@ const formData = useForm({
 });
 
 const employeeData = ref({});
+const scheduleData = ref([]);
 defineProps(["errors"]); // or defineProps({ errors: Object })
 
 const submitForm = async () => {
@@ -203,8 +204,8 @@ const submitForm = async () => {
         });
         // console.log(response.data);
         if (response.data.success) {
-            employeeData.value = response.data.employeeData.schedules || [];
-            // console.log(employeeData.value.employee_id);
+            employeeData.value = response.data.employeeData || [];
+            scheduleData.value = response.data.schedules || [];
             showModal.value = true;
         }
     } catch (error) {
@@ -224,8 +225,9 @@ const confirmDtrSubmitForm = useForm({
     dtrDate: "",
 });
 const confirmDtrSubmit = () => {
-    confirmDtrSubmitForm.employee_id = employeeData.value[0].employee_id;
-    confirmDtrSubmitForm.dtrDate = employeeData.value[0].sched_date;
+    console.log(scheduleData.value);
+    confirmDtrSubmitForm.employee_id = employeeData.value?.employee_id;
+    confirmDtrSubmitForm.dtrDate = scheduleData.value[0]?.sched_date;
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: () => {
             Swal.fire({
@@ -236,7 +238,11 @@ const confirmDtrSubmit = () => {
             }).then(() => {
                 showModal.value = false;
                 formData.reset();
-                document.getQuerySelector("#employeeID").css("focus", true);
+                employeeIDInput.value?.focus();
+                employeeIDInput.value?.style.setProperty(
+                    "border",
+                    "2px solid #fbc04a",
+                );
             });
         },
         onError: (error) => {

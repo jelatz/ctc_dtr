@@ -26,13 +26,22 @@ class DtrController extends Controller
         if (!$employeeData) {
             return response()->json([
                 'success' => false,
-                'message' => 'Employee not found.',
+                'message' => "Employee not found",
+            ], 404);
+        }
+
+        $schedules = $this->dtrService->getSchedules($employeeID, $timezone);
+        if (!$schedules) {
+            return response()->json([
+                'success' => false,
+                'message' => "No schedules found for Employee ID: {$employeeID}",
             ], 404);
         }
 
         return response()->json([
             'success' => true,
             'employeeData' => $employeeData,
+            'schedules' => $schedules
         ]);
     }
 
