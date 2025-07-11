@@ -44,7 +44,12 @@ class ScheduleRepository
     public function getCurrentSchedule(string $employeeID)
     {
         try {
-            $schedule = Schedule::with('user')->where('employee_id', $employeeID)->where('sched_date', date('Y-m-d'))->orderBy('sched_date', 'desc')->first();
+            $schedule = $schedule = Schedule::with('user')
+                ->where('employee_id', $employeeID)
+                ->whereIn('sched_date', [
+                    date('Y-m-d'),
+                    date('Y-m-d', strtotime('-1 day'))
+                ])->orderBy('sched_date', 'desc')->get();
             return $schedule;
         } catch (Exception $e) {
             Log::error("Failed to fetch current schedule for employee: {$employeeID}. Error: " . $e->getMessage());

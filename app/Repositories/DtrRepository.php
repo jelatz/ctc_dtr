@@ -40,8 +40,6 @@ class DtrRepository
         $dtrDate = $dtrDate ?: now()->toDateString();
         return Dtr::where('employee_id', $employeeID)
             ->whereDate('time_in', $dtrDate)
-            ->where('time_in', '!=', null)
-            ->where('time_out', '!=', null)
             ->latest()
             ->orderBy('created_at', 'desc')
             ->first();

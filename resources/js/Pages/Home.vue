@@ -225,7 +225,6 @@ const confirmDtrSubmitForm = useForm({
     dtrDate: "",
 });
 const confirmDtrSubmit = () => {
-    console.log(scheduleData.value);
     confirmDtrSubmitForm.employee_id = employeeData.value?.employee_id;
     confirmDtrSubmitForm.dtrDate = scheduleData.value[0]?.sched_date;
     confirmDtrSubmitForm.post(route("confirm-dtr"), {

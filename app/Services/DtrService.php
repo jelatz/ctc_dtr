@@ -24,18 +24,8 @@ class DtrService
         $this->userRepository = $userRepository;
     }
 
-    public function checkEmployee(string $employeeID, string $timezone)
+    public function checkEmployee(string $employeeID)
     {
-        // $employee = $this->fetchFromQisApi(['check_employee' => $employeeID]);
-
-        // if (!$employee || empty($employee['success'])) {
-        //     Log::error("Employee not found in QIS API for ID: {$employeeID}. Response: " . json_encode($employee));
-        //     return null;
-        // }
-
-        // $addOneDay = $this->checkDtr($employeeID);
-        // $schedules = $this->getSchedules($employeeID, $timezone, $addOneDay);
-
         $employee = $this->userRepository->checkEmployee($employeeID);
 
         if (!$employee) {
@@ -46,60 +36,89 @@ class DtrService
         return $employee;
     }
 
-
-    public function getSchedules(string $employeeID, string $timezone, bool $addOneDay = false)
+    public function getEmployeeSchedules(string $employeeID, string $timezone)
     {
-        $currentSchedule = $this->scheduleRepository->getCurrentSchedule($employeeID);
-        $timeIn = date('Y-m-d', strtotime($currentSchedule->sched_start));
-        $timeOut = date('Y-m-d', strtotime($currentSchedule->sched_end));
+        $employee = $this->userRepository->checkEmployee($employeeID);
 
-        if ($timeOut > $timeIn) {
+        if (!$employee) {
+            Log::error("Employee not found in local database for ID: {$employeeID}");
+            return null;
+        }
+
+        // Get yesterday and today's schedule (assumes getCurrentSchedule returns 2 entries)
+        $schedules = $this->scheduleRepository->getCurrentSchedule($employeeID); // should return sorted by date DESC
+
+        if (!$schedules || count($schedules) < 2) {
+            Log::error('Not enough schedules found for employee ID: ' . $employeeID);
+            return null;
+        }
+
+        $todaySchedule = $schedules[0];       // today
+        $yesterdaySchedule = $schedules[1];   // yesterday
+
+        // Check if yesterday's schedule crosses midnight
+        $yesterdayStart = date('Y-m-d', strtotime($yesterdaySchedule->sched_start));
+        $yesterdayEnd   = date('Y-m-d', strtotime($yesterdaySchedule->sched_end));
+        if ($yesterdayEnd > $yesterdayStart) {
+            // Normal Shift
             dd("yes");
+        } else {
+            dd("no");
+            // Graveyard Shift
         }
 
-        // check latest dtr data if there's login / logout
-        $dtrData = $this->dtrRepository->checkDtrExists($employeeID);
-        $addOneDay = $dtrData ? true : false;
+        // You can also apply the same logic to today's schedule if needed
+        $todayStart = strtotime($todaySchedule->sched_date . ' ' . $todaySchedule->sched_start);
+        $todayEnd   = strtotime($todaySchedule->sched_date . ' ' . $todaySchedule->sched_end);
 
-        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
-
-        if ($schedules->isEmpty()) {
-            Log::error("No schedules found for employee ID: {$employeeID}");
-            return [];
+        if ($todayEnd < $todayStart) {
+            Log::info("Today's shift crosses midnight (graveyard) for employee ID: {$employeeID}");
+            // Graveyard logic
+        } else {
+            Log::info("Today's shift is a regular daytime shift for employee ID: {$employeeID}");
+            // Day shift logic
         }
 
-        return $schedules;
+        return [
+            'success' => true,
+            'employeeData' => $employee,
+            'schedules' => [
+                'today' => $todaySchedule,
+                'yesterday' => $yesterdaySchedule
+            ]
+        ];
     }
 
-    // public function checkDtr(string $employeeID): bool
-    // {
-    //     $dtrData = $this->fetchFromQisApi(['check_dtr' => $employeeID]);
 
-    //     if (!$dtrData || empty($dtrData['success'])) {
-    //         Log::error("DTR not found in QIS API for ID: {$employeeID}. Response: " . json_encode($dtrData));
-    //         return false;
+
+    // public function getSchedules(string $employeeID, string $timezone, bool $addOneDay = false)
+    // {
+    //     $currentSchedule = $this->scheduleRepository->getCurrentSchedule($employeeID);
+    //     if ($currentSchedule) {
+    //         $timeIn = date('Y-m-d', strtotime($currentSchedule->sched_start));
+    //         $timeOut = date('Y-m-d', strtotime($currentSchedule->sched_end));
+    //         if ($timeOut > $timeIn) {
+    //             dd("yes");
+    //         }
+    //     }
+    //     // check latest dtr data if there's login / logout
+    //     $dtrData = $this->dtrRepository->checkDtrExists($employeeID);
+    //     $addOneDay = $dtrData && $dtrData->time_in && $dtrData->time_out ? true : false;
+
+    //     $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
+
+    //     if ($schedules->isEmpty()) {
+    //         Log::error("No schedules found for employee ID: {$employeeID}");
+    //         return [];
     //     }
 
-    //     return !empty($dtrData['time_in']) && !empty($dtrData['time_out']);
+    //     return $schedules;
     // }
 
-    // public function getSchedules(string $employeeID, $timezone, $addOneDay)
-    // {
-    //     $scheduleData = $this->fetchFromQisApi(['check_schedule' => $employeeID, 'timezone' => $timezone, 'add_one_day' => $addOneDay]);
-
-    //     if (!$scheduleData || empty($scheduleData['success'])) {
-    //         Log::error("Schedules not found in QIS API for ID: {$employeeID}. Response: " . json_encode($scheduleData));
-    //         return null;
-    //     }
-
-    //     return $scheduleData['schedules'] ?? [];
-    // }
-
-    public function logDTR(string $employeeID, string $dtrDate): bool
+    public function logDTR(string $employeeID, string $dtrDate)
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
         $nowTime = now()->addMinutes(5)->format('H:i:s');
-
 
         if (!$existingDtr) {
             $this->dtrRepository->storeDtr([
@@ -112,32 +131,14 @@ class DtrService
         }
 
         if (!$existingDtr->time_out && $existingDtr->time_in) {
+            $dateToday = now()->toDateString();
             $this->dtrRepository->updateDtr([
                 'employee_id' => $employeeID,
-                'dtr_date' => $dtrDate,
-                'time_out' => "{$dtrDate} {$nowTime}",
+                'dtr_date' => $dateToday,
+                'time_out' => "{$dateToday} {$nowTime}",
             ]);
             return true;
         }
         return false;
     }
-
-    /**
-     * Send GET request to QIS API and return decoded JSON.
-     */
-    // private function fetchFromQisApi(array $params): ?array
-    // {
-    //     $params['api_key'] = env('QIS_API_KEY');
-    //     $url = env('QIS_API_URL');
-
-    //     try {
-    //         $response = Http::withHeaders([
-    //             'X-API-KEY' => env('QIS_API_KEY'),
-    //         ])->get($url, $params);
-    //         return $response->json();
-    //     } catch (\Exception $e) {
-    //         Log::error("Failed to contact QIS API. Error: {$e->getMessage()}");
-    //         return null;
-    //     }
-    // }
 }

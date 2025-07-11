@@ -15,7 +15,7 @@ class ScheduleSeeder extends Seeder
         $year = now()->year;
 
         for ($day = 1; $day <= 30; $day++) {
-            $date = Carbon::create($year, 6, $day);
+            $date = Carbon::create($year, 7, $day);
             $start = (clone $date)->setTime(rand(8, 10), rand(0, 59));
             $end = (clone $start)->addHours(8);
 
