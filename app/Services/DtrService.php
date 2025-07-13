@@ -39,87 +39,46 @@ class DtrService
     public function getEmployeeSchedules(string $employeeID, string $timezone)
     {
         $employee = $this->userRepository->checkEmployee($employeeID);
-
         if (!$employee) {
-            Log::error("Employee not found in local database for ID: {$employeeID}");
-            return null;
+            return [
+                'success' => false,
+                'error_type' => 'employee_not_found',
+                'message' => "Employee ID {$employeeID} not found."
+            ];
         }
 
-        // Get yesterday and today's schedule (assumes getCurrentSchedule returns 2 entries)
-        $schedules = $this->scheduleRepository->getCurrentSchedule($employeeID); // should return sorted by date DESC
+        $yesterday = $this->scheduleRepository->getScheduleByDate($employeeID, now()->subDay()->toDateString());
+        $today = $this->scheduleRepository->getScheduleByDate($employeeID, now()->toDateString());
 
-        if (!$schedules || count($schedules) < 2) {
-            Log::error('Not enough schedules found for employee ID: ' . $employeeID);
-            return null;
+        if (!$yesterday || !$today) {
+            return [
+                'success' => false,
+                'error_type' => 'schedule_not_found',
+                'message' => "Schedule not found for employee {$employeeID} on yesterday or today."
+            ];
         }
 
-        $todaySchedule = $schedules[0];       // today
-        $yesterdaySchedule = $schedules[1];   // yesterday
+        $isGraveyard = false;
 
-        // Check if yesterday's schedule crosses midnight
-        $yesterdayStart = date('Y-m-d', strtotime($yesterdaySchedule->sched_start));
-        $yesterdayEnd   = date('Y-m-d', strtotime($yesterdaySchedule->sched_end));
-        if ($yesterdayEnd > $yesterdayStart) {
-            // Normal Shift
-            dd("yes");
-        } else {
-            dd("no");
-            // Graveyard Shift
+        $yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
+        $yesterdaySchedEndDate = date('Y-m-d', strtotime($yesterday->sched_end));
+
+        if ($yesterdaySchedEndDate > $yesterdaySchedStartDate) {
+            $isGraveyard = true;
         }
 
-        // You can also apply the same logic to today's schedule if needed
-        $todayStart = strtotime($todaySchedule->sched_date . ' ' . $todaySchedule->sched_start);
-        $todayEnd   = strtotime($todaySchedule->sched_date . ' ' . $todaySchedule->sched_end);
-
-        if ($todayEnd < $todayStart) {
-            Log::info("Today's shift crosses midnight (graveyard) for employee ID: {$employeeID}");
-            // Graveyard logic
-        } else {
-            Log::info("Today's shift is a regular daytime shift for employee ID: {$employeeID}");
-            // Day shift logic
-        }
-
+        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $isGraveyard);
         return [
             'success' => true,
             'employeeData' => $employee,
-            'schedules' => [
-                'today' => $todaySchedule,
-                'yesterday' => $yesterdaySchedule
-            ]
+            'schedules' => $schedules
         ];
     }
-
-
-
-    // public function getSchedules(string $employeeID, string $timezone, bool $addOneDay = false)
-    // {
-    //     $currentSchedule = $this->scheduleRepository->getCurrentSchedule($employeeID);
-    //     if ($currentSchedule) {
-    //         $timeIn = date('Y-m-d', strtotime($currentSchedule->sched_start));
-    //         $timeOut = date('Y-m-d', strtotime($currentSchedule->sched_end));
-    //         if ($timeOut > $timeIn) {
-    //             dd("yes");
-    //         }
-    //     }
-    //     // check latest dtr data if there's login / logout
-    //     $dtrData = $this->dtrRepository->checkDtrExists($employeeID);
-    //     $addOneDay = $dtrData && $dtrData->time_in && $dtrData->time_out ? true : false;
-
-    //     $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $timezone, $addOneDay);
-
-    //     if ($schedules->isEmpty()) {
-    //         Log::error("No schedules found for employee ID: {$employeeID}");
-    //         return [];
-    //     }
-
-    //     return $schedules;
-    // }
 
     public function logDTR(string $employeeID, string $dtrDate)
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
         $nowTime = now()->addMinutes(5)->format('H:i:s');
-
         if (!$existingDtr) {
             $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
@@ -139,6 +98,10 @@ class DtrService
             ]);
             return true;
         }
-        return false;
+
+        return ([
+            'success' => false,
+            'message' => `You already have logged in for today's shift`
+        ]);
     }
 }

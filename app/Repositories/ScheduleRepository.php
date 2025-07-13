@@ -20,7 +20,6 @@ class ScheduleRepository
             }
 
             $dateString = $localToday->toDateString();
-
             $schedules = Schedule::with('user')
                 ->where('employee_id', $employeeID)
                 ->where('sched_date', '<=', $dateString)
@@ -41,15 +40,10 @@ class ScheduleRepository
         }
     }
 
-    public function getCurrentSchedule(string $employeeID)
+    public function getScheduleByDate(string $employeeID, $date)
     {
         try {
-            $schedule = $schedule = Schedule::with('user')
-                ->where('employee_id', $employeeID)
-                ->whereIn('sched_date', [
-                    date('Y-m-d'),
-                    date('Y-m-d', strtotime('-1 day'))
-                ])->orderBy('sched_date', 'desc')->get();
+            $schedule = Schedule::with('user')->where('employee_id', $employeeID)->where('sched_date', $date)->orderBy('sched_date', 'desc')->first();
             return $schedule;
         } catch (Exception $e) {
             Log::error("Failed to fetch current schedule for employee: {$employeeID}. Error: " . $e->getMessage());

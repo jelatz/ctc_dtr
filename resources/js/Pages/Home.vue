@@ -242,9 +242,11 @@ const confirmDtrSubmit = () => {
                     "border",
                     "2px solid #fbc04a",
                 );
+                console.log("di ni error bleeh");
             });
         },
         onError: (error) => {
+            console.log("error ni oy");
             Swal.fire({
                 title: "Error",
                 text: error?.error,

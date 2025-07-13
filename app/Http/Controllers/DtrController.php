@@ -17,13 +17,11 @@ class DtrController extends Controller
         $this->dtrService = $dtrService;
     }
 
-    public function getSchedules(Request $request)
+    public function getEmployeeAndSchedules(Request $request)
     {
         $employeeID = $request->input('employeeID');
         $timezone = $request->input('timezone');
-
         $result = $this->dtrService->getEmployeeSchedules($employeeID, $timezone);
-
         if (!$result['success']) {
             return response()->json($result, 404);
         }
@@ -63,8 +61,13 @@ class DtrController extends Controller
     public function addDtr(Request $request)
     {
         $employeeID = $request->input('employee_id');
-        $dtrDate = now()->toDateString();
-        $this->dtrService->logDTR($employeeID, $dtrDate);
+        $dtrDate = $request->input('dtrDate');
+        $result = $this->dtrService->logDTR($employeeID, $dtrDate);
+        dd($result);
+        if (!$result && !$result['success'] === false) {
+            dd("yes");
+            return redirect()->back()->with('error', 'Already have a DTR logs for today.');
+        }
         return redirect()->back()->with('success', 'DTR successfully added for today.');
     }
 }
