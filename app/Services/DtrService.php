@@ -66,7 +66,6 @@ class DtrService
         if ($yesterdaySchedEndDate > $yesterdaySchedStartDate) {
             $isGraveyard = true;
         }
-
         $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $isGraveyard);
         return [
             'success' => true,

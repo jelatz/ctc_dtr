@@ -63,9 +63,7 @@ class DtrController extends Controller
         $employeeID = $request->input('employee_id');
         $dtrDate = $request->input('dtrDate');
         $result = $this->dtrService->logDTR($employeeID, $dtrDate);
-        dd($result);
         if (!$result && !$result['success'] === false) {
-            dd("yes");
             return redirect()->back()->with('error', 'Already have a DTR logs for today.');
         }
         return redirect()->back()->with('success', 'DTR successfully added for today.');
