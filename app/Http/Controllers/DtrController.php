@@ -17,55 +17,45 @@ class DtrController extends Controller
         $this->dtrService = $dtrService;
     }
 
-    public function getEmployeeAndSchedules(Request $request)
+    public function index()
     {
-        $employeeID = $request->input('employeeID');
-        $timezone = $request->input('timezone');
-        $result = $this->dtrService->getEmployeeSchedules($employeeID, $timezone);
-        if (!$result['success']) {
-            return response()->json($result, 404);
-        }
-
-        return response()->json($result);
+        return Inertia::render('Home');
     }
 
+    public function getEmployeeAndSchedules(Request $request)
+    {
+        $errorMessage = ['employeeID.exists' => 'Employee ID not found.'];
+        $data = $request->validate([
+            'employeeID' => 'required|exists:users,employee_id',
+        ], $errorMessage);
 
-    // public function getSchedules(Request $request)
-    // {
-    //     $employeeID = $request->input('employeeID');
-    //     $timezone = $request->input('timezone');
+        $employeeID = $data['employeeID'];
 
-    //     $employeeData = $this->dtrService->checkEmployee($employeeID);
-    //     if (!$employeeData) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => "Employee not found",
-    //         ], 404);
-    //     }
-    //     $schedules = $this->dtrService->getSchedules($employeeID, $timezone);
-    //     if (!$schedules) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => "No schedules found for Employee ID: {$employeeID}",
-    //         ], 404);
-    //     }
+        $result = $this->dtrService->getEmployeeSchedules($employeeID);
 
-    //     return response()->json([
-    //         'success' => true,
-    //         'employeeData' => $employeeData,
-    //         'schedules' => $schedules
-    //     ]);
-    // }
-
+        return to_route('home')->with([
+            'employeeData' => $result['employeeData'],
+            'schedules' => $result['schedules'],
+            'employeeID' => $employeeID,
+            'showModal' => true,
+        ]);
+    }
 
     public function addDtr(Request $request)
     {
         $employeeID = $request->input('employee_id');
         $dtrDate = $request->input('dtrDate');
+
         $result = $this->dtrService->logDTR($employeeID, $dtrDate);
-        if (!$result && !$result['success'] === false) {
-            return redirect()->back()->with('error', 'Already have a DTR logs for today.');
+
+        if (!$result['success']) {
+            return redirect()->back()->with([
+                'error' => "You already have logged in for today's shift"
+            ]);
         }
-        return redirect()->back()->with('success', 'DTR successfully added for today.');
+
+        return redirect()->back()->with([
+            'success' => 'DTR confirmed successfully!'
+        ]);
     }
 }

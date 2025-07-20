@@ -40,6 +40,7 @@
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
+import { router } from "@inertiajs/vue3";
 
 const props = defineProps({
     show: Boolean,
@@ -54,5 +55,6 @@ const emit = defineEmits(["close", "confirm"]);
 
 const closeModal = () => {
     emit("close");
+    router.visit(route("home"));
 };
 </script>

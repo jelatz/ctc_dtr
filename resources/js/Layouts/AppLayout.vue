@@ -3,7 +3,7 @@
         <!-- Login -->
         <div
             :class="[
-                'fixed top-1/2 z-10 hidden h-[1200px] w-[1200px] -translate-y-1/2 rotate-[45deg] rounded-[100px] bg-[#fbc04a] xl:-right-[40rem] xl:block 2xl:-right-[25rem]',
+                'fixed top-96 z-10 hidden h-[1200px] w-[1200px] -translate-y-1/2 rotate-[45deg] rounded-[100px] bg-[#fbc04a] xl:-right-[40rem] xl:block 2xl:-right-[25rem]',
             ]"
         ></div>
         <div
@@ -13,7 +13,7 @@
         ></div>
         <div
             :class="[
-                'fixed top-[6rem] z-40 hidden rotate-[180deg] opacity-100 xl:top-[10rem] xl:right-[32rem] xl:block 2xl:right-[46rem]',
+                'fixed top-[6rem] z-40 hidden rotate-[180deg] opacity-100 xl:top-[10rem] xl:right-[36rem] xl:block 2xl:right-[50rem]',
             ]"
         >
             <i

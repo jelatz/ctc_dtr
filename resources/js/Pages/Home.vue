@@ -130,20 +130,17 @@ import "swiper/swiper-bundle.css";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import AOS from "aos";
-import { useForm, usePage } from "@inertiajs/vue3";
+import { useForm, usePage, router } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { time, convertToLocalDate } from "@/utils/date";
 
-// Employee ID and error handling
+// States
 const showError = ref(false);
 const errorMessage = ref("");
-
 const employeeIDInput = ref(null);
-
-// modal current state
 const showModal = ref(false);
 
 onMounted(() => {
@@ -164,6 +161,11 @@ watch(showModal, (isOpen) => {
 const handleEscKey = (e) => {
     if (e.key === "Escape" && showModal.value) {
         showModal.value = false;
+        router.visit(route("home"), {
+            method: "get",
+            preserveState: false,
+            preserveScroll: false,
+        });
     }
 };
 
@@ -175,48 +177,80 @@ onBeforeUnmount(() => {
     window.removeEventListener("keydown", handleEscKey);
 });
 
+onMounted(() => {
+    if (page.props.employeeData && page.props.schedules) {
+        employeeData.value = page.props.employeeData;
+        scheduleData.value = page.props.schedules;
+        showModal.value = true;
+    }
+});
+
 // EmployeeID form
 const formData = useForm({
     employeeID: "",
-    processing: false,
-    timezone: "",
 });
 
-const employeeData = ref({});
+const employeeData = ref();
 const scheduleData = ref([]);
-defineProps(["errors"]); // or defineProps({ errors: Object })
 
-const submitForm = async () => {
+const page = usePage();
+
+const submitForm = () => {
     if (!formData.employeeID) {
         showError.value = true;
         errorMessage.value = "Employee ID is required.";
         return;
     }
 
-    showError.value = false;
-    errorMessage.value = "";
-    formData.processing = true;
-
-    try {
-        const response = await axios.post(route("get-schedules"), {
-            employeeID: formData.employeeID,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        });
-        // console.log(response.data);
-        if (response.data.success) {
-            employeeData.value = response.data.employeeData || [];
-            scheduleData.value = response.data.schedules || [];
+    formData.post(route("get-schedules"), {
+        onError: (errors) => {
+            console.log("Errors:", formData.errors);
+            showError.value = true;
+            errorMessage.value =
+                formData.errors.employeeID || "Unexpected error";
+        },
+        onSuccess: (response) => {
+            employeeData.value = page.props.employeeData || {};
+            scheduleData.value = page.props.schedules || [];
             showModal.value = true;
-        }
-    } catch (error) {
-        formData.reset();
-        showError.value = true;
-        errorMessage.value =
-            error.response?.data?.message || "An unexpected error occurred.";
-    } finally {
-        formData.processing = false;
-    }
+            showError.value = false;
+            errorMessage.value = "";
+            formData.reset();
+        },
+    });
 };
+
+// const submitForm = async () => {
+//     if (!formData.employeeID) {
+//         showError.value = true;
+//         errorMessage.value = "Employee ID is required.";
+//         return;
+//     }
+
+//     showError.value = false;
+//     errorMessage.value = "";
+//     formData.processing = true;
+
+//     try {
+//         const response = await axios.post(route("get-schedules"), {
+//             employeeID: formData.employeeID,
+//             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+//         });
+//         // console.log(response.data);
+//         if (response.data.success) {
+//             employeeData.value = response.data.employeeData || [];
+//             scheduleData.value = response.data.schedules || [];
+//             showModal.value = true;
+//         }
+//     } catch (error) {
+//         formData.reset();
+//         showError.value = true;
+//         errorMessage.value =
+//             error.response?.data?.message || "An unexpected error occurred.";
+//     } finally {
+//         formData.processing = false;
+//     }
+// };
 
 // Confirm DTR submission
 const confirmDtrSubmitForm = useForm({

@@ -8,11 +8,14 @@ use App\Http\Controllers\DtrController;
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('homepage');
+// Route::get('/', function () {
+//     return Inertia::render('Home');
+// })->name('homepage');
 
-Route::post('/get-schedules', [DtrController::class, 'getEmployeeAndSchedules'])
-    ->name('get-schedules');
+Route::inertia('/', 'Home')->name('home');
+// Route::post('/get-schedules', [DtrController::class, 'getEmployeeAndSchedules'])
+//     ->name('get-schedules');
+Route::match(['get', 'post'], '/get-schedules', [DtrController::class, 'getEmployeeAndSchedules'])->name('get-schedules');
+
 
 Route::post('/confirm-dtr', [DtrController::class, 'addDtr'])->name('confirm-dtr');

@@ -24,25 +24,12 @@ class DtrService
         $this->userRepository = $userRepository;
     }
 
-    public function checkEmployee(string $employeeID)
-    {
-        $employee = $this->userRepository->checkEmployee($employeeID);
-
-        if (!$employee) {
-            Log::error("Employee not found in local database for ID: {$employeeID}");
-            return null;
-        };
-
-        return $employee;
-    }
-
-    public function getEmployeeSchedules(string $employeeID, string $timezone)
+    public function getEmployeeSchedules(string $employeeID)
     {
         $employee = $this->userRepository->checkEmployee($employeeID);
         if (!$employee) {
             return [
                 'success' => false,
-                'error_type' => 'employee_not_found',
                 'message' => "Employee ID {$employeeID} not found."
             ];
         }
@@ -59,8 +46,7 @@ class DtrService
         }
 
         $isGraveyard = false;
-
-        $yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
+        ~$yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
         $yesterdaySchedEndDate = date('Y-m-d', strtotime($yesterday->sched_end));
 
         if ($yesterdaySchedEndDate > $yesterdaySchedStartDate) {
@@ -78,6 +64,7 @@ class DtrService
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
         $nowTime = now()->addMinutes(5)->format('H:i:s');
+
         if (!$existingDtr) {
             $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
@@ -85,7 +72,10 @@ class DtrService
                 'time_in' => "{$dtrDate} {$nowTime}",
                 'time_out' => null,
             ]);
-            return true;
+            return [
+                'success' => true,
+                'message' => 'DTR logged in successfully.',
+            ];
         }
 
         if (!$existingDtr->time_out && $existingDtr->time_in) {
@@ -95,12 +85,15 @@ class DtrService
                 'dtr_date' => $dateToday,
                 'time_out' => "{$dateToday} {$nowTime}",
             ]);
-            return true;
+            return [
+                'success' => true,
+                'message' => 'Time out logged successfully.',
+            ];
         }
 
-        return ([
+        return [
             'success' => false,
-            'message' => `You already have logged in for today's shift`
-        ]);
+            'message' => "You already have logged in for today's shift"
+        ];
     }
 }
