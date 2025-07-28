@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Dtr;
+use App\Models\Logs;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class DtrRepository
@@ -37,11 +37,18 @@ class DtrRepository
 
     public function checkDtrExists(string $employeeID, $dtrDate = null)
     {
-        $dtrDate = $dtrDate ?: now()->toDateString();
+        // $dtrDate = $dtrDate ?: now()->toDateString();
         return Dtr::where('employee_id', $employeeID)
             ->whereDate('time_in', $dtrDate)
             ->latest()
             ->orderBy('created_at', 'desc')
             ->first();
+    }
+
+    public function storeLogs(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+            return Logs::create($data);
+        });
     }
 }

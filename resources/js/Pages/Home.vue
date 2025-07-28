@@ -262,34 +262,42 @@ const confirmDtrSubmit = () => {
     confirmDtrSubmitForm.employee_id = employeeData.value?.employee_id;
     confirmDtrSubmitForm.dtrDate = scheduleData.value[0]?.sched_date;
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
-        onSuccess: () => {
-            Swal.fire({
-                title: "Success",
-                text: "DTR confirmed successfully!",
-                icon: "success",
-                confirmButtonText: "OK",
-            }).then(() => {
-                showModal.value = false;
-                formData.reset();
-                employeeIDInput.value?.focus();
-                employeeIDInput.value?.style.setProperty(
-                    "border",
-                    "2px solid #fbc04a",
-                );
-                console.log("di ni error bleeh");
-            });
-        },
-        onError: (error) => {
-            console.log("error ni oy");
-            Swal.fire({
-                title: "Error",
-                text: error?.error,
-                icon: "error",
-                confirmButtonText: "OK",
-            });
-        },
-        onFinish: () => {
-            confirmDtrSubmitForm.reset();
+        onSuccess: (response) => {
+            const flash = usePage().props.flash;
+
+            if (flash.error) {
+                Swal.fire({
+                    title: "Error",
+                    text: flash.error,
+                    icon: "error",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    showModal.value = false;
+                    formData.reset();
+                    employeeIDInput.value?.focus();
+                    employeeIDInput.value?.style.setProperty(
+                        "border",
+                        "2px solid #fbc04a",
+                    );
+                });
+            }
+
+            if (flash.success) {
+                Swal.fire({
+                    title: "Success",
+                    text: flash.success,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    showModal.value = false;
+                    formData.reset();
+                    employeeIDInput.value?.focus();
+                    employeeIDInput.value?.style.setProperty(
+                        "border",
+                        "2px solid #fbc04a",
+                    );
+                });
+            }
         },
     });
 };

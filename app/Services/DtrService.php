@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Repositories\DtrRepository;
 use App\Repositories\ScheduleRepository;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+
 
 class DtrService
 {
@@ -24,8 +26,15 @@ class DtrService
         $this->userRepository = $userRepository;
     }
 
-    public function getEmployeeSchedules(string $employeeID)
+    public function getEmployeeSchedules(Request $request)
     {
+        $errorMessage = ['employeeID.exists' => 'Employee ID not found.'];
+        $data = $request->validate([
+            'employeeID' => 'required|exists:users,employee_id',
+        ], $errorMessage);
+
+        $employeeID = $data['employeeID'];
+
         $employee = $this->userRepository->checkEmployee($employeeID);
         if (!$employee) {
             return [
@@ -45,14 +54,25 @@ class DtrService
             ];
         }
 
-        $isGraveyard = false;
-        ~$yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
+        $yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
         $yesterdaySchedEndDate = date('Y-m-d', strtotime($yesterday->sched_end));
 
+        $date = now()->toDateString();
+
         if ($yesterdaySchedEndDate > $yesterdaySchedStartDate) {
-            $isGraveyard = true;
+            $date = now()->subDay()->toDateString();
+            if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
+                $date = now()->toDateString();
+            }
         }
-        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $isGraveyard);
+    
+        if(now()->greaterThan(Carbon::parse($today->sched_end)->addHours(6))){
+            $date = now()->addDay()->toDateString();
+        }
+
+        dd($date);
+
+        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $date);
         return [
             'success' => true,
             'employeeData' => $employee,
@@ -91,9 +111,15 @@ class DtrService
             ];
         }
 
+        // If the DTR already exists store in logs and throw an error
+        $this->dtrRepository->storeLogs([
+            'employee_id' => $employeeID,
+            'dtr_date' => now()->toDateString()
+        ]);
+
         return [
             'success' => false,
-            'message' => "You already have logged in for today's shift"
+            'error_type' => 'dtr_exists',
         ];
     }
 }

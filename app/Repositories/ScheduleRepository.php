@@ -10,15 +10,12 @@ use Carbon\Carbon;
 
 class ScheduleRepository
 {
-    public function getLastFiveSchedule(string $employeeID, string $timezone = 'Asia/Manila', $isGraveyard = false)
+    public function getLastFiveSchedule(string $employeeID, $date)
     {
         try {
             // $localToday = Carbon::now($timezone);
-            if ($isGraveyard) {
-                $dateString = date('Y-m-d', strtotime(now()->addDay()));
-            }
-            $dateString = now()->toDateString();
-            // $dateString = $localToday->toDateString();
+            $dateString = $date ?? now()->toDateString();
+
             $schedules = Schedule::with('user')
                 ->where('employee_id', $employeeID)
                 ->where('sched_date', '<=', $dateString)

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\DtrService;
-use App\Services\UserService;
 use Inertia\Inertia;
 
 class DtrController extends Controller
@@ -24,19 +22,11 @@ class DtrController extends Controller
 
     public function getEmployeeAndSchedules(Request $request)
     {
-        $errorMessage = ['employeeID.exists' => 'Employee ID not found.'];
-        $data = $request->validate([
-            'employeeID' => 'required|exists:users,employee_id',
-        ], $errorMessage);
-
-        $employeeID = $data['employeeID'];
-
-        $result = $this->dtrService->getEmployeeSchedules($employeeID);
+        $result = $this->dtrService->getEmployeeSchedules($request);
 
         return to_route('home')->with([
             'employeeData' => $result['employeeData'],
             'schedules' => $result['schedules'],
-            'employeeID' => $employeeID,
             'showModal' => true,
         ]);
     }
@@ -47,10 +37,11 @@ class DtrController extends Controller
         $dtrDate = $request->input('dtrDate');
 
         $result = $this->dtrService->logDTR($employeeID, $dtrDate);
+        // 'message' => "You already have logged in for today's shift. Data has been stored in logs."
 
-        if (!$result['success']) {
+        if ($result && !$result['success'] && $result['error_type'] === 'dtr_exists') {
             return redirect()->back()->with([
-                'error' => "You already have logged in for today's shift"
+                'error' => "You already have logged in for today's shift. Data has been stored in logs."
             ]);
         }
 
