@@ -33,9 +33,37 @@ class DtrService
         if (!$employee) {
             return false;
         }
+
+        return $employee;
     }
 
-    public function getEmployeeSchedules(Request $request) {}
+    public function getEmployeeSchedules(Request $request)
+    {
+        // Check yesterday and today's schedules
+        $yesterday = $this->scheduleRepository->getScheduleByDate(
+            $request->input('employeeID'),
+            Carbon::yesterday()->toDateString()
+        );
+        if (date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
+            $sched_date = $yesterday->sched_date;
+            if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
+                $sched_date = Carbon::now()->toDateString();
+            } else {
+                $sched_date = $yesterday->sched_date;
+            }
+        } else {
+            $sched_date = Carbon::today()->toDateString();
+        }
+
+        $schedules = $this->scheduleRepository->getLastFiveSchedule(
+            $request->input('employeeID'),
+            $sched_date
+        );
+        if (!$schedules) {
+            return false;
+        }
+        return $schedules;
+    }
 
     public function logDTR(string $employeeID, string $dtrDate)
     {

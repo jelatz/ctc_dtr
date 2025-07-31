@@ -161,11 +161,11 @@ watch(showModal, (isOpen) => {
 const handleEscKey = (e) => {
     if (e.key === "Escape" && showModal.value) {
         showModal.value = false;
-        router.visit(route("home"), {
-            method: "get",
-            preserveState: false,
-            preserveScroll: false,
-        });
+        // router.visit(route("home"), {
+        //     method: "get",
+        //     preserveState: false,
+        //     preserveScroll: false,
+        // });
     }
 };
 
@@ -199,14 +199,13 @@ const submitForm = () => {
     if (!formData.employeeID) {
         showError.value = true;
         errorMessage.value = "Employee ID is required.";
-
-        // 🔴 Clear existing Inertia validation error for employeeID
         formData.clearErrors("employeeID");
-
         return;
     }
-
     formData.post(route("get-schedules"), {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true, // prevents pushing /get-schedules to browser history
         onError: (errors) => {
             showError.value = true;
             errorMessage.value =
@@ -214,7 +213,7 @@ const submitForm = () => {
         },
         onSuccess: () => {
             employeeData.value = usePage().props.employeeData || {};
-            scheduleData.value = page.props.schedules || [];
+            scheduleData.value = usePage().props.schedules || [];
             showModal.value = true;
             showError.value = false;
             errorMessage.value = "";

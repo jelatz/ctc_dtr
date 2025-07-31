@@ -26,23 +26,22 @@ class DtrController extends Controller
         $employeeID = $request->input('employeeID');
 
         $employee = $this->dtrService->checkEmployee($employeeID);
-
         if (!$employee) {
             throw ValidationException::withMessages([
                 'employeeID' => 'Employee not found.'
             ]);
         }
-        $result = $this->dtrService->getEmployeeSchedules($request);
+        $schedules = $this->dtrService->getEmployeeSchedules($request);
 
-        if (!$result['success']) {
-            return redirect()->back()->with('error', 'No schedules found for employee.');
+        if (!$schedules) {
+            throw ValidationException::withMessages([
+                'employeeID' => 'No schedules found for employee.'
+            ]);
         }
 
-
-        return to_route('home')->with([
-            'employeeData' => $result['employeeData'],
-            'schedules' => $result['schedules'],
-            'showModal' => true,
+        return redirect()->route('home')->with([
+            'employeeData' => $employee,
+            'schedules' => $schedules
         ]);
     }
 
