@@ -19,7 +19,7 @@ class ScheduleFactory extends Factory
 
     public function definition(): array
     {
-        $start = $this->faker->dateTimeBetween('2025-07-01 10:00:00', '2025-07-30 07:00:00');
+        $start = $this->faker->dateTimeBetween('2025-07-01 10:00:00', '2025-08-30 07:00:00');
         $end = (clone $start)->modify('+8 hours');
 
         return [

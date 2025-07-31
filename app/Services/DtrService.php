@@ -26,59 +26,16 @@ class DtrService
         $this->userRepository = $userRepository;
     }
 
-    public function getEmployeeSchedules(Request $request)
+    public function checkEmployee($employeeID)
     {
-        $errorMessage = ['employeeID.exists' => 'Employee ID not found.'];
-        $data = $request->validate([
-            'employeeID' => 'required|exists:users,employee_id',
-        ], $errorMessage);
-
-        $employeeID = $data['employeeID'];
-
         $employee = $this->userRepository->checkEmployee($employeeID);
+
         if (!$employee) {
-            return [
-                'success' => false,
-                'message' => "Employee ID {$employeeID} not found."
-            ];
+            return false;
         }
-
-        $yesterday = $this->scheduleRepository->getScheduleByDate($employeeID, now()->subDay()->toDateString());
-        $today = $this->scheduleRepository->getScheduleByDate($employeeID, now()->toDateString());
-
-        if (!$yesterday || !$today) {
-            return [
-                'success' => false,
-                'error_type' => 'schedule_not_found',
-                'message' => "Schedule not found for employee {$employeeID} on yesterday or today."
-            ];
-        }
-
-        $yesterdaySchedStartDate = date('Y-m-d', strtotime($yesterday->sched_start));
-        $yesterdaySchedEndDate = date('Y-m-d', strtotime($yesterday->sched_end));
-
-        $date = now()->toDateString();
-
-        if ($yesterdaySchedEndDate > $yesterdaySchedStartDate) {
-            $date = now()->subDay()->toDateString();
-            if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
-                $date = now()->toDateString();
-            }
-        }
-    
-        if(now()->greaterThan(Carbon::parse($today->sched_end)->addHours(6))){
-            $date = now()->addDay()->toDateString();
-        }
-
-        dd($date);
-
-        $schedules = $this->scheduleRepository->getLastFiveSchedule($employeeID, $date);
-        return [
-            'success' => true,
-            'employeeData' => $employee,
-            'schedules' => $schedules
-        ];
     }
+
+    public function getEmployeeSchedules(Request $request) {}
 
     public function logDTR(string $employeeID, string $dtrDate)
     {

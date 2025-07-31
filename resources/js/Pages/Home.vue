@@ -22,7 +22,7 @@
                     ]"
                 />
                 <small v-if="showError" class="text-red-600">{{
-                    errorMessage
+                    formData.errors.employeeID || errorMessage
                 }}</small>
                 <button
                     class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
@@ -199,18 +199,21 @@ const submitForm = () => {
     if (!formData.employeeID) {
         showError.value = true;
         errorMessage.value = "Employee ID is required.";
+
+        // 🔴 Clear existing Inertia validation error for employeeID
+        formData.clearErrors("employeeID");
+
         return;
     }
 
     formData.post(route("get-schedules"), {
         onError: (errors) => {
-            console.log("Errors:", formData.errors);
             showError.value = true;
             errorMessage.value =
                 formData.errors.employeeID || "Unexpected error";
         },
-        onSuccess: (response) => {
-            employeeData.value = page.props.employeeData || {};
+        onSuccess: () => {
+            employeeData.value = usePage().props.employeeData || {};
             scheduleData.value = page.props.schedules || [];
             showModal.value = true;
             showError.value = false;
@@ -219,38 +222,6 @@ const submitForm = () => {
         },
     });
 };
-
-// const submitForm = async () => {
-//     if (!formData.employeeID) {
-//         showError.value = true;
-//         errorMessage.value = "Employee ID is required.";
-//         return;
-//     }
-
-//     showError.value = false;
-//     errorMessage.value = "";
-//     formData.processing = true;
-
-//     try {
-//         const response = await axios.post(route("get-schedules"), {
-//             employeeID: formData.employeeID,
-//             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-//         });
-//         // console.log(response.data);
-//         if (response.data.success) {
-//             employeeData.value = response.data.employeeData || [];
-//             scheduleData.value = response.data.schedules || [];
-//             showModal.value = true;
-//         }
-//     } catch (error) {
-//         formData.reset();
-//         showError.value = true;
-//         errorMessage.value =
-//             error.response?.data?.message || "An unexpected error occurred.";
-//     } finally {
-//         formData.processing = false;
-//     }
-// };
 
 // Confirm DTR submission
 const confirmDtrSubmitForm = useForm({

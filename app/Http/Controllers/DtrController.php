@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DtrService;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class DtrController extends Controller
@@ -22,7 +23,21 @@ class DtrController extends Controller
 
     public function getEmployeeAndSchedules(Request $request)
     {
+        $employeeID = $request->input('employeeID');
+
+        $employee = $this->dtrService->checkEmployee($employeeID);
+
+        if (!$employee) {
+            throw ValidationException::withMessages([
+                'employeeID' => 'Employee not found.'
+            ]);
+        }
         $result = $this->dtrService->getEmployeeSchedules($request);
+
+        if (!$result['success']) {
+            return redirect()->back()->with('error', 'No schedules found for employee.');
+        }
+
 
         return to_route('home')->with([
             'employeeData' => $result['employeeData'],
