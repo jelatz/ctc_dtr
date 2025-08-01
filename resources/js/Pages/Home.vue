@@ -84,7 +84,7 @@
         <div class="w-full p-5">
             <small class="mb-2">Showing 5 history </small>
             <table class="w-full">
-                <thead class="bg-gray-200">
+                <thead class="bg-gray-600 text-white">
                     <tr class="py-2">
                         <th class="w-32 py-2">Date</th>
                         <th class="w-96 py-2">Schedule</th>
@@ -94,7 +94,7 @@
                 </thead>
                 <tbody class="nth-[0]-child:bg-gray-100">
                     <tr
-                        class="text-center"
+                        class="text-center even:bg-gray-200"
                         v-for="(schedule, index) in scheduleData"
                         :key="index"
                     >
@@ -116,6 +116,7 @@
                 <button
                     type="submit"
                     class="float-end mt-5 w-fit cursor-pointer bg-[#fbc04a] px-10 py-1 hover:bg-[#fbc04ad4]"
+                    id="confirmDtrButton"
                 >
                     Confirm DTR
                 </button>
@@ -212,11 +213,16 @@ const submitForm = () => {
                 formData.errors.employeeID || "Unexpected error";
         },
         onSuccess: () => {
+            console.log("Form submitted successfully");
             employeeData.value = usePage().props.employeeData || {};
             scheduleData.value = usePage().props.schedules || [];
             showModal.value = true;
             showError.value = false;
             errorMessage.value = "";
+            setTimeout(() => {
+                const btn = document.getElementById("confirmDtrButton");
+                if (btn) btn.focus();
+            }, 0);
             formData.reset();
         },
     });

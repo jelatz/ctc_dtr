@@ -44,6 +44,12 @@ class DtrService
             $request->input('employeeID'),
             Carbon::yesterday()->toDateString()
         );
+
+        $today = $this->scheduleRepository->getScheduleByDate(
+            $request->input('employeeID'),
+            Carbon::today()->toDateString()
+        );
+
         if (date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
             $sched_date = $yesterday->sched_date;
             if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
@@ -53,6 +59,12 @@ class DtrService
             }
         } else {
             $sched_date = Carbon::today()->toDateString();
+            $sched_date = $today->sched_date;
+            if (now()->greaterThan(Carbon::parse($today->sched_end)->addHours(6))) {
+                $sched_date = Carbon::now()->tomorrow()->toDateString();
+            } else {
+                $sched_date = $today->sched_date;
+            }
         }
 
         $schedules = $this->scheduleRepository->getLastFiveSchedule(
