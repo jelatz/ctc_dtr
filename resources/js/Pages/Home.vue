@@ -213,7 +213,6 @@ const submitForm = () => {
                 formData.errors.employeeID || "Unexpected error";
         },
         onSuccess: () => {
-            console.log("Form submitted successfully");
             employeeData.value = usePage().props.employeeData || {};
             scheduleData.value = usePage().props.schedules || [];
             showModal.value = true;
@@ -240,40 +239,36 @@ const confirmDtrSubmit = () => {
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: (response) => {
             const flash = usePage().props.flash;
-
-            if (flash.error) {
-                Swal.fire({
-                    title: "Error",
-                    text: flash.error,
-                    icon: "error",
-                    confirmButtonText: "OK",
-                }).then(() => {
-                    showModal.value = false;
-                    formData.reset();
-                    employeeIDInput.value?.focus();
-                    employeeIDInput.value?.style.setProperty(
-                        "border",
-                        "2px solid #fbc04a",
-                    );
-                });
-            }
-
-            if (flash.success) {
-                Swal.fire({
-                    title: "Success",
-                    text: flash.success,
-                    icon: "success",
-                    confirmButtonText: "OK",
-                }).then(() => {
-                    showModal.value = false;
-                    formData.reset();
-                    employeeIDInput.value?.focus();
-                    employeeIDInput.value?.style.setProperty(
-                        "border",
-                        "2px solid #fbc04a",
-                    );
-                });
-            }
+            Swal.fire({
+                title: "Success",
+                text: flash.success,
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(() => {
+                showModal.value = false;
+                formData.reset();
+                employeeIDInput.value?.focus();
+                employeeIDInput.value?.style.setProperty(
+                    "border",
+                    "2px solid #fbc04a",
+                );
+            });
+        },
+        onError: (errors) => {
+            Swal.fire({
+                title: "Error",
+                text: errors.employeeID || "Unexpected error",
+                icon: "error",
+                confirmButtonText: "OK",
+            }).then(() => {
+                showModal.value = false;
+                formData.reset();
+                employeeIDInput.value?.focus();
+                employeeIDInput.value?.style.setProperty(
+                    "border",
+                    "2px solid #fbc04a",
+                );
+            });
         },
     });
 };

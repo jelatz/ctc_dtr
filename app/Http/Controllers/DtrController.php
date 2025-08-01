@@ -51,16 +51,14 @@ class DtrController extends Controller
         $dtrDate = $request->input('dtrDate');
 
         $result = $this->dtrService->logDTR($employeeID, $dtrDate);
-        // 'message' => "You already have logged in for today's shift. Data has been stored in logs."
-
-        if ($result && !$result['success'] && $result['error_type'] === 'dtr_exists') {
-            return redirect()->back()->with([
-                'error' => "You already have logged in for today's shift. Data has been stored in logs."
+        if (!$result) {
+            throw ValidationException::withMessages([
+                'employeeID' => 'You already have logged in for today\'s shift.'
             ]);
         }
 
-        return redirect()->back()->with([
-            'success' => 'DTR confirmed successfully!'
+        return redirect()->route('home')->with([
+            'success' => 'DTR logged in successfully.'
         ]);
     }
 }

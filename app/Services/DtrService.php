@@ -83,40 +83,29 @@ class DtrService
         $nowTime = now()->addMinutes(5)->format('H:i:s');
 
         if (!$existingDtr) {
-            $this->dtrRepository->storeDtr([
+            return $this->dtrRepository->storeDtr([
                 'employee_id' => $employeeID,
                 'dtr_date' => $dtrDate,
                 'time_in' => "{$dtrDate} {$nowTime}",
                 'time_out' => null,
             ]);
-            return [
-                'success' => true,
-                'message' => 'DTR logged in successfully.',
-            ];
         }
 
         if (!$existingDtr->time_out && $existingDtr->time_in) {
             $dateToday = now()->toDateString();
-            $this->dtrRepository->updateDtr([
+            return $this->dtrRepository->updateDtr([
                 'employee_id' => $employeeID,
                 'dtr_date' => $dateToday,
                 'time_out' => "{$dateToday} {$nowTime}",
             ]);
-            return [
-                'success' => true,
-                'message' => 'Time out logged successfully.',
-            ];
         }
 
         // If the DTR already exists store in logs and throw an error
-        $this->dtrRepository->storeLogs([
+        if ($this->dtrRepository->storeLogs([
             'employee_id' => $employeeID,
             'dtr_date' => now()->toDateString()
-        ]);
-
-        return [
-            'success' => false,
-            'error_type' => 'dtr_exists',
-        ];
+        ])) {
+            return false;
+        }
     }
 }
