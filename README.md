@@ -15,7 +15,7 @@
 
 <h1>Features</h1>
 
-- Employee Login and time in/out.
+- Employee time in/out.
 
 <h1>Tech Stack</h1>
 
