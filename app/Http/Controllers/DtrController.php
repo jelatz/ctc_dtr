@@ -53,7 +53,7 @@ class DtrController extends Controller
         $result = $this->dtrService->logDTR($employeeID, $dtrDate);
         if (!$result) {
             throw ValidationException::withMessages([
-                'employeeID' => 'You already have logged in for today\'s shift.'
+                'employeeID' => 'You already have logged in for today\'s shift. This action will be logged incase of overtime application'
             ]);
         }
 

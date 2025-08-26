@@ -1,80 +1,52 @@
 <template>
+
     <Head title=" - Home" />
-    <div :class="['flex h-full w-full items-center justify-center']">
+    <div :class="['flex items-center justify-between z-50 absolute top-[25rem] w-full']">
         <!-- Form -->
-        <div
-            class="z-50 w-96 xl:absolute xl:top-1/2 xl:left-14 xl:-mt-5 xl:ml-[5%] xl:inline-block xl:-translate-y-1/2 2xl:left-24"
-            :data-aos="'fade-right'"
-        >
+        <div class="z-50 w-[30rem] ml-64" :data-aos="'fade-right'">
             <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
             <p class="mb-10 text-center">{{ currentDateTime }}</p>
             <form @submit.prevent="submitForm">
                 <label for="employeeID" class="mb-1 block">DTR ID:</label>
-                <input
-                    ref="employeeIDInput"
-                    v-model.trim="formData.employeeID"
-                    type="text"
-                    id="employeeID"
-                    placeholder="Enter Employee ID"
-                    :class="[
+                <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
+                    placeholder="Enter Employee ID" :class="[
                         'h-10 w-full rounded-lg border bg-slate-50 px-5',
                         showError ? 'border-red-600' : 'border-gray-300',
-                    ]"
-                />
+                    ]" />
                 <small v-if="showError" class="text-red-600">{{
                     formData.errors.employeeID || errorMessage
-                }}</small>
-                <button
-                    class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
-                    :disabled="formData.processing"
-                >
+                    }}</small>
+                <button class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
+                    :disabled="formData.processing">
                     Submit
                 </button>
             </form>
         </div>
-    </div>
-    <!-- Left Side (Swiper) -->
-    <div
-        class="absolute top-[40%] right-0 z-50 hidden w-1/2 xl:block"
-        :data-aos="'fade-left'"
-    >
-        <Swiper
-            :modules="[Autoplay, Navigation, Pagination]"
-            :slides-per-view="1"
-            :space-between="50"
-            :loop="true"
-            :autoplay="{
-                delay: 3000,
-                disableOnInteraction: false,
-            }"
-            :pagination="{
-                clickable: true,
-            }"
-            :navigation="true"
-            class="mySwiper"
-        >
-            <SwiperSlide v-for="(item, index) in items" :key="index">
-                <div class="relative mx-auto w-[70%]">
-                    <img
-                        :src="item.image"
-                        :alt="'Slide ' + (index + 1)"
-                        class="h-20 w-20 rounded-full object-cover"
-                    />
-                    <h3 class="text-xl font-bold">{{ item.title }}</h3>
-                    <p>{{ item.description }}</p>
-                </div>
-            </SwiperSlide>
-        </Swiper>
+        <!-- Left Side (Swiper) -->
+        <div class="w-[50rem] mr-20" :data-aos="'fade-left'">
+            <Swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="1" :space-between="50" :loop="true"
+                :autoplay="{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                }" :pagination="{
+                    clickable: true,
+                }" :navigation="true" class="mySwiper">
+                <SwiperSlide v-for="(item, index) in items" :key="index">
+                    <div class="relative mx-auto w-[70%]">
+                        <img :src="item.image" :alt="'Slide ' + (index + 1)"
+                            class="h-20 w-20 rounded-full object-cover" />
+                        <h3 class="text-xl font-bold">{{ item.title }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </SwiperSlide>
+            </Swiper>
+        </div>
     </div>
 
     <!-- Modal Component -->
     <Modal :show="showModal" @close="showModal = false" modalTitle="modalTitle">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
-            <img
-                src=""
-                alt="Profile Picture"
-                class="h-64 w-full rounded-md bg-slate-600"
-            />
+            <img src="" alt="Profile Picture" class="h-64 w-full rounded-md bg-slate-600" />
             <p class="mt-3 w-full text-left">
                 Employee ID:
                 <span>{{ employeeData?.employee_id }}</span>
@@ -93,11 +65,7 @@
                     </tr>
                 </thead>
                 <tbody class="nth-[0]-child:bg-gray-100">
-                    <tr
-                        class="text-center even:bg-gray-200"
-                        v-for="(schedule, index) in scheduleData"
-                        :key="index"
-                    >
+                    <tr class="text-center even:bg-gray-200" v-for="(schedule, index) in scheduleData" :key="index">
                         <td class="py-3">
                             {{ convertToLocalDate(schedule?.sched_date) }}
                         </td>
@@ -113,11 +81,9 @@
                 </tbody>
             </table>
             <form @submit.prevent="confirmDtrSubmit">
-                <button
-                    type="submit"
+                <button type="submit"
                     class="float-end mt-5 w-fit cursor-pointer bg-[#fbc04a] px-10 py-1 hover:bg-[#fbc04ad4]"
-                    id="confirmDtrButton"
-                >
+                    id="confirmDtrButton">
                     Confirm DTR
                 </button>
             </form>
@@ -213,7 +179,7 @@ const submitForm = () => {
                 formData.errors.employeeID || "Unexpected error";
         },
         onSuccess: () => {
-            employeeData.value = usePage().props.employeeData || {};
+            employeeData.value = page.props.employeeData || {};
             scheduleData.value = usePage().props.schedules || [];
             showModal.value = true;
             showError.value = false;
@@ -369,6 +335,7 @@ const items = [
 :deep(.swiper-pagination-bullet-active) {
     color: #000;
 }
+
 .swiper-button-prev:after,
 .swiper-button-next:after {
     font-size: 1.6rem !important;
