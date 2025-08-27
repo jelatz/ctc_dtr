@@ -1,41 +1,47 @@
 <template>
 
     <Head title=" - Home" />
-    <div class="flex w-full" id="container">
-        <!-- Form (left) -->
-        <div class="w-1/2 flex flex-col items-center justify-start p-4 mt-96" :data-aos="'fade-right'">
-            <div class="w-full max-w-md">
-                <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
-                <p class="mb-10 text-center">{{ currentDateTime }}</p>
-                <form @submit.prevent="submitForm" class="shadow-xl p-8">
-                    <label for="employeeID" class="mb-1 block font-bold">DTR ID:</label>
-                    <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
-                        placeholder="Enter Employee ID" :class="[
-                            'h-10 w-full rounded-lg border bg-slate-50 px-5',
-                            showError ? 'border-red-600' : 'border-gray-300',
-                        ]" />
-                    <small v-if="showError" class="text-red-600">
-                        {{ formData.errors.employeeID || errorMessage }}
-                    </small>
-                    <button
-                        class="mx-auto mt-5 w-full cursor-pointer bg-blue-800 text-white rounded-lg py-1 hover:bg-blue-700"
-                        :disabled="formData.processing">
-                        Submit
-                    </button>
-                </form>
-                <p id="loginLogout"
-                    class="block w-36 mx-auto mt-20 px-4 py-2 rounded-lg text-3xl animate-bounce cursor-pointer text-center">
-                    F2 <span class="text-lg">Logout</span>
-                </p>
-            </div>
+    <div :class="['flex items-center justify-between z-50 absolute top-[25rem] w-full']">
+        <!-- Form -->
+        <div class="z-50 w-[30rem] ml-64" :data-aos="'fade-right'">
+            <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
+            <p class="mb-10 text-center">{{ currentDateTime }}</p>
+            <form @submit.prevent="submitForm">
+                <label for="employeeID" class="mb-1 block">DTR ID:</label>
+                <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
+                    placeholder="Enter Employee ID" :class="[
+                        'h-10 w-full rounded-lg border bg-slate-50 px-5',
+                        showError ? 'border-red-600' : 'border-gray-300',
+                    ]" />
+                <small v-if="showError" class="text-red-600">{{
+                    formData.errors.employeeID || errorMessage
+                    }}</small>
+                <button class="mx-auto mt-5 w-full cursor-pointer bg-[#fbc04a] py-1 hover:bg-[#fbc04ad4]"
+                    :disabled="formData.processing">
+                    Submit
+                </button>
+            </form>
         </div>
-
-        <!-- Carousel (right) -->
-        <div class="w-1/2 flex items-start justify-center bg-blue-400 p-4">
-            <h1 class="text-white text-2xl">Carousel of Calltek Images</h1>
+        <!-- Left Side (Swiper) -->
+        <div class="w-[50rem] mr-20" :data-aos="'fade-left'">
+            <Swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="1" :space-between="50" :loop="true"
+                :autoplay="{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                }" :pagination="{
+                    clickable: true,
+                }" :navigation="true" class="mySwiper">
+                <SwiperSlide v-for="(item, index) in items" :key="index">
+                    <div class="relative mx-auto w-[70%]">
+                        <img :src="item.image" :alt="'Slide ' + (index + 1)"
+                            class="h-20 w-20 rounded-full object-cover" />
+                        <h3 class="text-xl font-bold">{{ item.title }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </SwiperSlide>
+            </Swiper>
         </div>
     </div>
-
 
     <!-- Modal Component -->
     <Modal :show="showModal" @close="showModal = false" modalTitle="modalTitle">
@@ -94,6 +100,7 @@ import AOS from "aos";
 import { useForm, usePage, router } from "@inertiajs/vue3";
 import "aos/dist/aos.css";
 import Modal from "@/Components/Modal.vue";
+import axios from "axios";
 import Swal from "sweetalert2";
 import { time, convertToLocalDate } from "@/utils/date";
 
@@ -290,51 +297,56 @@ onMounted(() => {
         ).toLocaleTimeString();
         formatDate();
     }, 1000);
-
-    window.addEventListener("keydown", handleF2Key);
-    window.addEventListener("keydown", handleF1Key);
 });
 
 onBeforeUnmount(() => {
     if (clockInterval) clearInterval(clockInterval);
-
-    window.removeEventListener("keydown", handleF2Key);
-    window.removeEventListener("keydown", handleF1Key);
 });
 
-const handleF2Key = (event) => {
-    if (event.key === "F2") {
-        const container = document.getElementById("container");
-        const loginLogoutButton = document.getElementById("loginLogout");
-
-        if (container && loginLogoutButton) {
-            container.classList.add("flipped");
-            loginLogoutButton.innerHTML = `
-        <span class="text-blue-600">F1</span>
-        <span class="text-lg"> Login</span>
-      `;
-        }
-    }
-};
-
-const handleF1Key = (event) => {
-    if (event.key === "F1") {
-        const container = document.getElementById("container");
-        const loginLogoutButton = document.getElementById("loginLogout");
-
-        if (container && loginLogoutButton) {
-            container.classList.remove("flipped");
-            loginLogoutButton.innerHTML = `
-        <span class="text-red-600">F2</span>
-        <span class="text-lg"> Logout</span>
-      `;
-        }
-    }
-};
-
-
+// Swiper items
+const items = [
+    {
+        image: "/images/slide1.jpg",
+        title: "Slide 1 Title",
+        description: "Short description for slide 1",
+    },
+    {
+        image: "/images/slide2.jpg",
+        title: "Slide 2 Title",
+        description: "Short description for slide 2",
+    },
+    {
+        image: "/images/slide3.jpg",
+        title: "Slide 3 Title",
+        description: "Short description for slide 3",
+    },
+];
 </script>
-<style scoped>
+<style>
+/* Carousel style */
+.mySwiper {
+    width: 40rem;
+    height: 300px;
+}
+
+/* Navigation buttons and pagination */
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev),
+:deep(.swiper-pagination-bullet-active) {
+    color: #000;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+    font-size: 1.6rem !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+    background: #000;
+}
+
 /* Clock styling */
 .clock {
     text-shadow: 0 15px 3px rgba(54, 54, 54, 0.08);
@@ -343,18 +355,5 @@ const handleF1Key = (event) => {
 /* Modal style fix */
 :deep(.modal-overlay) {
     z-index: 9999;
-}
-
-#container {
-    transition: transform 0.5s ease-in-out;
-}
-
-#container.flipped {
-    transform: scaleX(-1);
-}
-
-/* Unflip all direct children so they look normal */
-#container.flipped>* {
-    transform: scaleX(-1);
 }
 </style>
