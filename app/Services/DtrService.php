@@ -50,7 +50,7 @@ class DtrService
             Carbon::today()->toDateString()
         );
 
-        if (date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
+        if ($yesterday && date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
             $sched_date = $yesterday->sched_date;
             if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
                 $sched_date = Carbon::now()->toDateString();

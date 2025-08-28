@@ -3,7 +3,7 @@
     <Head title=" - Home" />
     <div class="flex w-full" id="container">
         <!-- Form (left) -->
-        <div class="w-1/2 flex flex-col items-center justify-start p-4 mt-96" :data-aos="'fade-right'">
+        <div class="w-1/2 flex flex-col items-center justify-center p-4" :data-aos="'fade-right'">
             <div class="w-full max-w-md">
                 <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
                 <p class="mb-10 text-center">{{ currentDateTime }}</p>
@@ -319,6 +319,7 @@ const handleF2Key = (event) => {
 
 const handleF1Key = (event) => {
     if (event.key === "F1") {
+        event.preventDefault();
         const container = document.getElementById("container");
         const loginLogoutButton = document.getElementById("loginLogout");
 
@@ -349,12 +350,8 @@ const handleF1Key = (event) => {
     transition: transform 0.5s ease-in-out;
 }
 
-#container.flipped {
-    transform: scaleX(-1);
+#container.flipped,#container.flipped>* {
+  transform: scaleX(-1);
 }
 
-/* Unflip all direct children so they look normal */
-#container.flipped>* {
-    transform: scaleX(-1);
-}
 </style>
