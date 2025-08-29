@@ -39,6 +39,18 @@ class DtrService
 
     public function getEmployeeSchedules(Request $request)
     {
+
+        $setSchedule = $this->scheduleRepository->getScheduleByDate($request->input('employeeID'), Carbon::today()->toDateString());
+
+        if (!$setSchedule) {
+            return false;
+        }
+
+        $schedules = $this->scheduleRepository->getLastFiveSchedule(
+            $request->input('employeeID'),
+            Carbon::yesterday()->toDateString()
+        );
+
         // Check yesterday and today's schedules
         $yesterday = $this->scheduleRepository->getScheduleByDate(
             $request->input('employeeID'),
@@ -50,7 +62,7 @@ class DtrService
             Carbon::today()->toDateString()
         );
 
-        if (date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
+        if ($yesterday && date('Y-m-d', strtotime($yesterday->sched_end)) > date('Y-m-d', strtotime($yesterday->sched_start))) {
             $sched_date = $yesterday->sched_date;
             if (now()->greaterThan(Carbon::parse($yesterday->sched_end)->addHours(6))) {
                 $sched_date = Carbon::now()->toDateString();
