@@ -20,6 +20,7 @@
         "@inertiajs/vue3": "^2.0.5",
         "@vitejs/plugin-vue": "^5.2.3",
         "aos": "^2.3.4",
+        "motion-v": "^1.7.0",
         "sweetalert2": "^11.22.2",
         "swiper": "^11.2.6"
     },
