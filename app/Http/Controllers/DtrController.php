@@ -57,8 +57,18 @@ class DtrController extends Controller
             ]);
         }
 
-        return redirect()->route('home')->with([
-            'success' => 'DTR logged in successfully.'
-        ]);
+        if ($result['type'] === 'login') {
+            return redirect()->route('home')->with([
+                'success' => 'You have logged in successfully.'
+            ]);
+        } else {
+            return redirect()->route('home')->with([
+                'success' => 'You have logged out successfully.'
+            ]);
+        }
+
+        // return redirect()->route('home')->with([
+        //     'success' => 'DTR logged in successfully.'
+        // ]);
     }
 }

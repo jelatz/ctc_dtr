@@ -17,15 +17,19 @@
                     <small v-if="showError" class="text-red-600">
                         {{ formData.errors.employeeID || errorMessage }}
                     </small>
-                    <button
-                        class="mx-auto mt-5 w-full cursor-pointer bg-blue-800 text-white rounded-lg py-1 hover:bg-blue-700"
-                        :disabled="formData.processing">
-                        Submit
+                    <button :class="[
+                        'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1',
+                        isLogin ? 'bg-blue-800 text-white hover:bg-blue-700' : 'bg-red-600 text-white hover:bg-red-500'
+                    ]" :disabled="formData.processing">
+                        {{ isLogin ? 'Login' : 'Logout' }}
                     </button>
                 </form>
-                <p id="loginLogout"
-                    class="block w-36 mx-auto mt-20 px-4 py-2 rounded-lg text-3xl animate-bounce cursor-pointer text-center">
-                    F2 <span class="text-lg">Logout</span>
+                <p id="loginLogout" :class="[
+                    'block w-36 mx-auto mt-20 px-4 py-2 rounded-lg text-3xl animate-bounce cursor-pointer text-center',
+                    isLogin ? 'text-red-600' : 'text-blue-600'
+                ]">
+                    {{ isLogin ? 'F1' : 'F2' }} <span class="text-lg text-black">{{ isLogin ? 'Logout' : 'Login'
+                    }}</span>
                 </p>
             </div>
         </div>
@@ -102,6 +106,7 @@ const showError = ref(false);
 const errorMessage = ref("");
 const employeeIDInput = ref(null);
 const showModal = ref(false);
+const isLogin = ref(true);
 
 onMounted(() => {
     setTimeout(() => {
@@ -309,10 +314,11 @@ const handleF2Key = (event) => {
 
         if (container && loginLogoutButton) {
             container.classList.add("flipped");
-            loginLogoutButton.innerHTML = `
-        <span class="text-blue-600">F1</span>
-        <span class="text-lg"> Login</span>
-      `;
+            isLogin.value = false;
+            //         loginLogoutButton.innerHTML = `
+            //     <span class="text-blue-600">F1</span>
+            //     <span class="text-lg"> Login</span>
+            //   `;
         }
     }
 };
@@ -325,16 +331,16 @@ const handleF1Key = (event) => {
 
         if (container && loginLogoutButton) {
             container.classList.remove("flipped");
-            loginLogoutButton.innerHTML = `
-        <span class="text-red-600">F2</span>
-        <span class="text-lg"> Logout</span>
-      `;
+            isLogin.value = true;
+            //         loginLogoutButton.innerHTML = `
+            //     <span class="text-red-600">F2</span>
+            //     <span class="text-lg"> Logout</span>
+            //   `;
         }
     }
 };
-
-
 </script>
+
 <style scoped>
 /* Clock styling */
 .clock {
@@ -350,8 +356,8 @@ const handleF1Key = (event) => {
     transition: transform 0.5s ease-in-out;
 }
 
-#container.flipped,#container.flipped>* {
-  transform: scaleX(-1);
+#container.flipped,
+#container.flipped>* {
+    transform: scaleX(-1);
 }
-
 </style>
