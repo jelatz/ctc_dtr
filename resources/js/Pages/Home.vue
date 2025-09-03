@@ -111,10 +111,10 @@
             <form @submit.prevent="confirmDtrSubmit">
                 <button
                     type="submit"
-                    class="float-end mt-5 w-fit cursor-pointer bg-[#fbc04a] px-10 py-1 hover:bg-[#fbc04ad4]"
+                    :class="['float-end mt-5 w-fit cursor-pointer rounded-md px-10 py-1', isLogin ? 'bg-blue-800 text-white hover:bg-blue-900' : 'bg-red-600 text-white hover:bg-red-700']"
                     id="confirmDtrButton"
                 >
-                    Confirm DTR
+                    {{ isLogin ? "Login" : "Logout" }}
                 </button>
             </form>
         </div>
@@ -383,15 +383,4 @@ const handleF1Key = (event) => {
     z-index: 9999;
 }
 
-/* #container {
-    transform: translate(-50vw);
-} */
-/* #container {
-    transition: transform 0.5s ease-in-out;
-}
-
-#container.flipped,
-#container.flipped > * {
-    transform: scaleX(-1);
-} */
 </style>
