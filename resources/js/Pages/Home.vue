@@ -1,50 +1,73 @@
 <template>
-
     <Head title=" - Home" />
     <div class="flex w-full" id="container">
         <!-- Form (left) -->
-        <div class="w-1/2 flex flex-col items-center justify-center p-4" :data-aos="'fade-right'">
+        <div
+            class="flex w-1/2 flex-col items-center justify-center p-4"
+            :data-aos="'fade-right'"
+        >
             <div class="w-full max-w-md">
                 <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
                 <p class="mb-10 text-center">{{ currentDateTime }}</p>
-                <form @submit.prevent="submitForm" class="shadow-xl p-8">
-                    <label for="employeeID" class="mb-1 block font-bold">DTR ID:</label>
-                    <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
-                        placeholder="Enter Employee ID" :class="[
+                <form @submit.prevent="submitForm" class="p-8 shadow-xl">
+                    <label for="employeeID" class="mb-1 block font-bold"
+                        >DTR ID:</label
+                    >
+                    <input
+                        ref="employeeIDInput"
+                        v-model.trim="formData.employeeID"
+                        type="text"
+                        id="employeeID"
+                        placeholder="Enter Employee ID"
+                        :class="[
                             'h-10 w-full rounded-lg border bg-slate-50 px-5',
                             showError ? 'border-red-600' : 'border-gray-300',
-                        ]" />
+                        ]"
+                    />
                     <small v-if="showError" class="text-red-600">
                         {{ formData.errors.employeeID || errorMessage }}
                     </small>
-                    <button :class="[
-                        'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1',
-                        isLogin ? 'bg-blue-800 text-white hover:bg-blue-700' : 'bg-red-600 text-white hover:bg-red-500'
-                    ]" :disabled="formData.processing">
-                        {{ isLogin ? 'Login' : 'Logout' }}
+                    <button
+                        :class="[
+                            'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1',
+                            isLogin
+                                ? 'bg-blue-800 text-white hover:bg-blue-700'
+                                : 'bg-red-600 text-white hover:bg-red-500',
+                        ]"
+                        :disabled="formData.processing"
+                    >
+                        {{ isLogin ? "Login" : "Logout" }}
                     </button>
                 </form>
-                <p id="loginLogout" :class="[
-                    'block w-36 mx-auto mt-20 px-4 py-2 rounded-lg text-3xl animate-bounce cursor-pointer text-center',
-                    isLogin ? 'text-red-600' : 'text-blue-600'
-                ]">
-                    {{ isLogin ? 'F1' : 'F2' }} <span class="text-lg text-black">{{ isLogin ? 'Logout' : 'Login'
+                <p
+                    id="loginLogout"
+                    :class="[
+                        'mx-auto mt-20 block w-36 animate-bounce cursor-pointer rounded-lg px-4 py-2 text-center text-3xl',
+                        isLogin ? 'text-red-600' : 'text-blue-600',
+                    ]"
+                >
+                    {{ isLogin ? "F2" : "F1" }}
+                    <span class="text-lg text-black">{{
+                        isLogin ? "Logout" : "Login"
                     }}</span>
                 </p>
             </div>
         </div>
 
         <!-- Carousel (right) -->
-        <div class="w-1/2 flex items-start justify-center bg-blue-400 p-4">
-            <h1 class="text-white text-2xl">Carousel of Calltek Images</h1>
+        <div class="flex w-1/2 items-start justify-center">
+            <Carousel :slides="images" autoplay :interval="4000" />
         </div>
     </div>
-
 
     <!-- Modal Component -->
     <Modal :show="showModal" @close="showModal = false" modalTitle="modalTitle">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
-            <img src="" alt="Profile Picture" class="h-64 w-full rounded-md bg-slate-600" />
+            <img
+                src=""
+                alt="Profile Picture"
+                class="h-64 w-full rounded-md bg-slate-600"
+            />
             <p class="mt-3 w-full text-left">
                 Employee ID:
                 <span>{{ employeeData?.employee_id }}</span>
@@ -63,7 +86,11 @@
                     </tr>
                 </thead>
                 <tbody class="nth-[0]-child:bg-gray-100">
-                    <tr class="text-center even:bg-gray-200" v-for="(schedule, index) in scheduleData" :key="index">
+                    <tr
+                        class="text-center even:bg-gray-200"
+                        v-for="(schedule, index) in scheduleData"
+                        :key="index"
+                    >
                         <td class="py-3">
                             {{ convertToLocalDate(schedule?.sched_date) }}
                         </td>
@@ -79,9 +106,11 @@
                 </tbody>
             </table>
             <form @submit.prevent="confirmDtrSubmit">
-                <button type="submit"
+                <button
+                    type="submit"
                     class="float-end mt-5 w-fit cursor-pointer bg-[#fbc04a] px-10 py-1 hover:bg-[#fbc04ad4]"
-                    id="confirmDtrButton">
+                    id="confirmDtrButton"
+                >
                     Confirm DTR
                 </button>
             </form>
@@ -90,9 +119,8 @@
 </template>
 
 <script setup>
-import { Swiper, SwiperSlide } from "swiper/vue";
+import Carousel from "@/Components/Carousel.vue";
 import "swiper/swiper-bundle.css";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import AOS from "aos";
 import { useForm, usePage, router } from "@inertiajs/vue3";
@@ -107,6 +135,13 @@ const errorMessage = ref("");
 const employeeIDInput = ref(null);
 const showModal = ref(false);
 const isLogin = ref(true);
+
+// Images for the carousel
+const images = [
+  "https://picsum.photos/id/1018/1920/1080",
+  "https://picsum.photos/id/1015/1920/1080",
+  "https://picsum.photos/id/1016/1920/1080",
+];
 
 onMounted(() => {
     setTimeout(() => {
@@ -357,7 +392,7 @@ const handleF1Key = (event) => {
 }
 
 #container.flipped,
-#container.flipped>* {
+#container.flipped > * {
     transform: scaleX(-1);
 }
 </style>
