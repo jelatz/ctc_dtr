@@ -1,17 +1,20 @@
 <template>
     <Head title=" - Home" />
-    <div class="flex w-full" id="container">
+    <div class="flex transform transition-transform duration-500 ease-in-out -translate-x-[50vw]" id="container">
+        <div class="flex w-[50vw] items-start justify-center">
+            <Carousel :slides="images" autoplay :interval="4000" />
+        </div>
         <!-- Form (left) -->
         <div
-            class="flex w-1/2 flex-col items-center justify-center p-4"
+            class="flex w-[50vw] flex-col items-center justify-center p-4"
             :data-aos="'fade-right'"
         >
             <div class="w-full max-w-md">
-                <p class="clock mb-2 text-center text-4xl">{{ currentTime }}</p>
-                <p class="mb-10 text-center">{{ currentDateTime }}</p>
+                <p class="clock mb-2 text-center text-7xl">{{ currentTime }}</p>
+                <p class="mb-10 text-center text-xl">{{ currentDateTime }}</p>
                 <form @submit.prevent="submitForm" class="p-8 shadow-xl">
-                    <label for="employeeID" class="mb-1 block font-bold"
-                        >DTR ID:</label
+                    <label for="employeeID" class="mb-1 block text-lg font-bold"
+                        >Employee ID:</label
                     >
                     <input
                         ref="employeeIDInput"
@@ -29,7 +32,7 @@
                     </small>
                     <button
                         :class="[
-                            'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1',
+                            'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1 font-bold',
                             isLogin
                                 ? 'bg-blue-800 text-white hover:bg-blue-700'
                                 : 'bg-red-600 text-white hover:bg-red-500',
@@ -42,12 +45,12 @@
                 <p
                     id="loginLogout"
                     :class="[
-                        'mx-auto mt-20 block w-36 animate-bounce cursor-pointer rounded-lg px-4 py-2 text-center text-3xl',
+                        'mx-auto mt-20 block w-36 animate-bounce cursor-pointer rounded-lg px-4 py-2 text-center text-3xl font-bold',
                         isLogin ? 'text-red-600' : 'text-blue-600',
                     ]"
                 >
                     {{ isLogin ? "F2" : "F1" }}
-                    <span class="text-lg text-black">{{
+                    <span class="text-lg font-bold text-black">{{
                         isLogin ? "Logout" : "Login"
                     }}</span>
                 </p>
@@ -55,7 +58,7 @@
         </div>
 
         <!-- Carousel (right) -->
-        <div class="flex w-1/2 items-start justify-center">
+        <div class="flex w-[50vw] items-start justify-center">
             <Carousel :slides="images" autoplay :interval="4000" />
         </div>
     </div>
@@ -138,9 +141,9 @@ const isLogin = ref(true);
 
 // Images for the carousel
 const images = [
-  "https://picsum.photos/id/1018/1920/1080",
-  "https://picsum.photos/id/1015/1920/1080",
-  "https://picsum.photos/id/1016/1920/1080",
+    "https://picsum.photos/id/1018/1920/1080",
+    "https://picsum.photos/id/1015/1920/1080",
+    "https://picsum.photos/id/1016/1920/1080",
 ];
 
 onMounted(() => {
@@ -343,37 +346,30 @@ onBeforeUnmount(() => {
 });
 
 const handleF2Key = (event) => {
-    if (event.key === "F2") {
-        const container = document.getElementById("container");
-        const loginLogoutButton = document.getElementById("loginLogout");
+  if (event.key === "F2") {
+    const container = document.getElementById("container");
+    const loginLogoutButton = document.getElementById("loginLogout");
 
-        if (container && loginLogoutButton) {
-            container.classList.add("flipped");
-            isLogin.value = false;
-            //         loginLogoutButton.innerHTML = `
-            //     <span class="text-blue-600">F1</span>
-            //     <span class="text-lg"> Login</span>
-            //   `;
-        }
+    if (container && loginLogoutButton) {
+      container.classList.remove("-translate-x-[50vw]");
+      isLogin.value = false;
     }
+  }
 };
 
 const handleF1Key = (event) => {
-    if (event.key === "F1") {
-        event.preventDefault();
-        const container = document.getElementById("container");
-        const loginLogoutButton = document.getElementById("loginLogout");
+  if (event.key === "F1") {
+    event.preventDefault();
+    const container = document.getElementById("container");
+    const loginLogoutButton = document.getElementById("loginLogout");
 
-        if (container && loginLogoutButton) {
-            container.classList.remove("flipped");
-            isLogin.value = true;
-            //         loginLogoutButton.innerHTML = `
-            //     <span class="text-red-600">F2</span>
-            //     <span class="text-lg"> Logout</span>
-            //   `;
-        }
+    if (container && loginLogoutButton) {
+      container.classList.add("-translate-x-[50vw]");
+      isLogin.value = true;
     }
+  }
 };
+
 </script>
 
 <style scoped>
@@ -387,12 +383,15 @@ const handleF1Key = (event) => {
     z-index: 9999;
 }
 
-#container {
+/* #container {
+    transform: translate(-50vw);
+} */
+/* #container {
     transition: transform 0.5s ease-in-out;
 }
 
 #container.flipped,
 #container.flipped > * {
     transform: scaleX(-1);
-}
+} */
 </style>
