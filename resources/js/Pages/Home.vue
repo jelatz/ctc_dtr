@@ -1,58 +1,43 @@
 <template>
+
     <Head title=" - Home" />
-    <div class="flex transform transition-transform duration-500 ease-in-out -translate-x-[50vw]" id="container">
+    <div class="flex -translate-x-[50vw] transform transition-transform duration-500 ease-in-out" id="container">
         <div class="flex w-[50vw] items-start justify-center">
             <Carousel :slides="images" autoplay :interval="4000" />
         </div>
         <!-- Form (left) -->
-        <div
-            class="flex w-[50vw] flex-col items-center justify-center p-4"
-            :data-aos="'fade-right'"
-        >
+        <div class="flex w-[50vw] flex-col items-center justify-center p-4" :data-aos="'fade-right'">
             <div class="w-full max-w-md">
                 <p class="clock mb-2 text-center text-7xl">{{ currentTime }}</p>
                 <p class="mb-10 text-center text-xl">{{ currentDateTime }}</p>
+
                 <form @submit.prevent="submitForm" class="p-8 shadow-xl">
-                    <label for="employeeID" class="mb-1 block text-lg font-bold"
-                        >Employee ID:</label
-                    >
-                    <input
-                        ref="employeeIDInput"
-                        v-model.trim="formData.employeeID"
-                        type="text"
-                        id="employeeID"
-                        placeholder="Enter Employee ID"
-                        :class="[
+                    <label for="employeeID" class="mb-1 block text-lg font-bold">Employee ID:</label>
+                    <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
+                        placeholder="Enter Employee ID" :class="[
                             'h-10 w-full rounded-lg border bg-slate-50 px-5',
                             showError ? 'border-red-600' : 'border-gray-300',
-                        ]"
-                    />
+                        ]" />
                     <small v-if="showError" class="text-red-600">
                         {{ formData.errors.employeeID || errorMessage }}
                     </small>
-                    <button
-                        :class="[
-                            'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1 font-bold',
-                            isLogin
-                                ? 'bg-blue-800 text-white hover:bg-blue-700'
-                                : 'bg-red-600 text-white hover:bg-red-500',
-                        ]"
-                        :disabled="formData.processing"
-                    >
+                    <button :class="[
+                        'mx-auto mt-5 w-full cursor-pointer rounded-lg py-1 font-bold transition-colors duration-500 ease-in-out',
+                        isLogin
+                            ? 'bg-blue-800 text-white hover:bg-blue-700'
+                            : 'bg-red-600 text-white hover:bg-red-500',
+                    ]" :disabled="formData.processing">
                         {{ isLogin ? "Login" : "Logout" }}
                     </button>
                 </form>
-                <p
-                    id="loginLogout"
-                    :class="[
-                        'mx-auto mt-20 block w-36 animate-bounce cursor-pointer rounded-lg px-4 py-2 text-center text-3xl font-bold',
-                        isLogin ? 'text-red-600' : 'text-blue-600',
-                    ]"
-                >
-                    {{ isLogin ? "F2" : "F1" }}
-                    <span class="text-lg font-bold text-black">{{
-                        isLogin ? "Logout" : "Login"
-                    }}</span>
+                <p id="loginLogout" :class="[
+                    'mx-auto mt-20 block animate-bounce cursor-pointer rounded-lg px-4 py-2 text-center text-3xl font-bold transition-colors duration-500 ease-in-out',
+                    isLogin ? 'text-red-600' : 'text-blue-600',
+                ]">
+                    {{ isLogin ? "Press F2 to Logout" : "Press F1 to Login" }}
+                    <!-- <span class="text-lg font-bold text-black">
+                        {{ isLogin ? "Logout" : "Login" }}
+                    </span> -->
                 </p>
             </div>
         </div>
@@ -66,11 +51,7 @@
     <!-- Modal Component -->
     <Modal :show="showModal" @close="showModal = false" modalTitle="modalTitle">
         <div class="flex w-[30rem] flex-col items-center justify-center p-5">
-            <img
-                src=""
-                alt="Profile Picture"
-                class="h-64 w-full rounded-md bg-slate-600"
-            />
+            <img src="" alt="Profile Picture" class="h-64 w-full rounded-md bg-slate-600" />
             <p class="mt-3 w-full text-left">
                 Employee ID:
                 <span>{{ employeeData?.employee_id }}</span>
@@ -89,11 +70,7 @@
                     </tr>
                 </thead>
                 <tbody class="nth-[0]-child:bg-gray-100">
-                    <tr
-                        class="text-center even:bg-gray-200"
-                        v-for="(schedule, index) in scheduleData"
-                        :key="index"
-                    >
+                    <tr class="text-center even:bg-gray-200" v-for="(schedule, index) in scheduleData" :key="index">
                         <td class="py-3">
                             {{ convertToLocalDate(schedule?.sched_date) }}
                         </td>
@@ -109,11 +86,12 @@
                 </tbody>
             </table>
             <form @submit.prevent="confirmDtrSubmit">
-                <button
-                    type="submit"
-                    :class="['float-end mt-5 w-fit cursor-pointer rounded-md px-10 py-1', isLogin ? 'bg-blue-800 text-white hover:bg-blue-900' : 'bg-red-600 text-white hover:bg-red-700']"
-                    id="confirmDtrButton"
-                >
+                <button type="submit" :class="[
+                    'float-end mt-5 w-fit cursor-pointer rounded-md px-10 py-1',
+                    isLogin
+                        ? 'bg-blue-800 text-white hover:bg-blue-900'
+                        : 'bg-red-600 text-white hover:bg-red-700',
+                ]" id="confirmDtrButton">
                     {{ isLogin ? "Login" : "Logout" }}
                 </button>
             </form>
@@ -346,30 +324,31 @@ onBeforeUnmount(() => {
 });
 
 const handleF2Key = (event) => {
-  if (event.key === "F2") {
-    const container = document.getElementById("container");
-    const loginLogoutButton = document.getElementById("loginLogout");
+    if (event.key === "F2") {
+        const container = document.getElementById("container");
+        const loginLogoutButton = document.getElementById("loginLogout");
+        showError.value = false;
+        errorMessage.value = "";
 
-    if (container && loginLogoutButton) {
-      container.classList.remove("-translate-x-[50vw]");
-      isLogin.value = false;
+        if (container && loginLogoutButton) {
+            container.classList.remove("-translate-x-[50vw]");
+            isLogin.value = false;
+        }
     }
-  }
 };
 
 const handleF1Key = (event) => {
-  if (event.key === "F1") {
-    event.preventDefault();
-    const container = document.getElementById("container");
-    const loginLogoutButton = document.getElementById("loginLogout");
+    if (event.key === "F1") {
+        event.preventDefault();
+        const container = document.getElementById("container");
+        const loginLogoutButton = document.getElementById("loginLogout");
 
-    if (container && loginLogoutButton) {
-      container.classList.add("-translate-x-[50vw]");
-      isLogin.value = true;
+        if (container && loginLogoutButton) {
+            container.classList.add("-translate-x-[50vw]");
+            isLogin.value = true;
+        }
     }
-  }
 };
-
 </script>
 
 <style scoped>
@@ -382,5 +361,4 @@ const handleF1Key = (event) => {
 :deep(.modal-overlay) {
     z-index: 9999;
 }
-
 </style>
