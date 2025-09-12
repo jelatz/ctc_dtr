@@ -1,12 +1,12 @@
 <template>
 
     <Head title=" - Home" />
-    <div class="flex -translate-x-[50vw] transform transition-transform duration-500 ease-in-out" id="container">
-        <div class="flex w-[50vw] items-start justify-center">
+    <div class="flex -translate-x-[50vw] duration-500 ease-in-out *:w-[50vw]" id="container">
+        <div class="flex items-start justify-center">
             <Carousel :slides="images" autoplay :interval="4000" />
         </div>
         <!-- Form (left) -->
-        <div class="flex w-[50vw] flex-col items-center justify-center p-4" :data-aos="'fade-right'">
+        <div class="flex flex-col items-center justify-center p-4" :data-aos="'fade-right'">
             <div class="w-full max-w-md">
                 <p class="clock mb-2 text-center text-7xl">{{ currentTime }}</p>
                 <p class="mb-10 text-center text-xl">{{ currentDateTime }}</p>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Carousel (right) -->
-        <div class="flex w-[50vw] items-start justify-center">
+        <div class="flex items-start justify-center">
             <Carousel :slides="images" autoplay :interval="4000" />
         </div>
     </div>
