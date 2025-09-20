@@ -13,7 +13,7 @@ Route::get('/status', function () {
 // Route::post('/register', [AuthController::class, 'register']);
 
 // Protected routes (need token)
-// Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {7
 //     Route::get('/user', function (Request $request) {
 //         return $request->user(); // Current logged in user
 //     });
