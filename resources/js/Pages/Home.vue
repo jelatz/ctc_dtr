@@ -212,10 +212,14 @@ const confirmDtrSubmitForm = useForm({
     employee_id: "",
     timezone: "",
     dtrDate: "",
+    type: isLogin.value,
+
 });
 const confirmDtrSubmit = () => {
     confirmDtrSubmitForm.employee_id = employeeData.value?.employee_id;
     confirmDtrSubmitForm.dtrDate = scheduleData.value[0]?.sched_date;
+    confirmDtrSubmitForm.type = isLogin.value ? "login" : "logout";
+
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
         onSuccess: (response) => {
             const flash = usePage().props.flash;
@@ -252,6 +256,7 @@ const confirmDtrSubmit = () => {
         },
     });
 };
+
 
 // Current time and date
 const currentTime = ref(

@@ -11,6 +11,7 @@ class Logs extends Model
     protected $fillable = [
         'employee_id',
         'dtr_date',
+        'type',
         'created_at',
         'updated_at'
     ];

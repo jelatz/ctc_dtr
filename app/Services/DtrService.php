@@ -66,34 +66,41 @@ class DtrService
     /**
      * Log time in/out or store in logs if already exists.
      */
-    public function logDTR(string $employeeID, string $dtrDate)
+    public function logDTR(string $employeeID, string $dtrDate, string $type)
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
         $nowTime = now()->addMinutes(5);
 
-        if (!$existingDtr) {
-            return ([
-                $this->createTimeIn($employeeID, $dtrDate, $nowTime),
-                'type' => 'login'
-            ]);
-            // return $this->createTimeIn($employeeID, $dtrDate, $nowTime);
+        // Validation rules
+        if ($existingDtr && $type === 'login') {
+            return false; // Already logged in
         }
 
-        if ($existingDtr->time_in && !$existingDtr->time_out) {
-            return ([
-                $this->updateTimeOut($employeeID, $nowTime),
-                'type' => 'logout'
-            ]);
-
-            // return $this->updateTimeOut($employeeID, $nowTime);
+        if ($existingDtr && $existingDtr->time_out && $type === 'logout') {
+            return false; // Already logged out
         }
 
-        // If both time_in and time_out exist, just log attempt
-        return $this->dtrRepository->storeLogs([
+        // Store log first
+        $this->dtrRepository->storeLogs([
             'employee_id' => $employeeID,
-            'dtr_date'    => now()->toDateString(),
-        ]) ? false : null;
+            'dtr_date'    => $dtrDate,
+            'type'        => $type,
+        ]);
+
+        // Handle time in / time out
+        if (!$existingDtr && $type === 'login') {
+            $this->createTimeIn($employeeID, $dtrDate, $nowTime);
+        } elseif ($existingDtr && $existingDtr->time_in && !$existingDtr->time_out && $type === 'logout') {
+            $this->updateTimeOut($employeeID, $nowTime);
+        }
+
+        return [
+            'status' => 'success',
+            'type'   => $type,
+        ];
     }
+
+
 
     /**
      * Create new DTR entry (time in).
