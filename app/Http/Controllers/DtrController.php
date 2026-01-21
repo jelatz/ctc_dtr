@@ -9,12 +9,8 @@ use Inertia\Inertia;
 
 class DtrController extends Controller
 {
-    protected $dtrService;
 
-    public function __construct(DtrService $dtrService)
-    {
-        $this->dtrService = $dtrService;
-    }
+    public function __construct(protected DtrService $dtrService) {}
 
     public function index()
     {
