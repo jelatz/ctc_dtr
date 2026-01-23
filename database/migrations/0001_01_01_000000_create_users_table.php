@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id(); // Primary Key
             $table->string('employee_id')->unique(); // Employee ID
             $table->string('name'); // Employee Name
-            $table->dateTime('time_in'); // DateTime for login
-            $table->dateTime('time_out'); // DateTime for logout
+            $table->boolean('is_imported');
             $table->timestamps(); // Created_at & Updated_at
         });
 

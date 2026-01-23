@@ -9,10 +9,11 @@
         <div class="flex flex-col items-center justify-center p-4" :data-aos="'fade-right'">
             <div class="w-full max-w-md">
                 <p class="clock mb-2 text-center text-7xl">{{ currentTime }}</p>
-                <p class="mb-10 text-center text-xl">{{ currentDateTime }}</p>
+                <p class="mb text-center text-xl">{{ currentDateTime }}</p>
+                <p class="text-center ">{{ timezone }}</p>
 
                 <form @submit.prevent="submitForm" class="p-8 shadow-xl">
-                    <label for="employeeID" class="mb-1 block text-lg font-bold">Employee ID:</label>
+                    <label for="employeeID" class="mb-1 text-lg font-bold hidden">Employee ID:</label>
                     <input ref="employeeIDInput" v-model.trim="formData.employeeID" type="text" id="employeeID"
                         placeholder="Enter Employee ID" :class="[
                             'h-10 w-full rounded-lg border bg-slate-50 px-5',
@@ -116,6 +117,8 @@ const errorMessage = ref("");
 const employeeIDInput = ref(null);
 const showModal = ref(false);
 const isLogin = ref(true);
+const timezoneOffset = (new Date()).getTimezoneOffset()
+const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone + ` (UTC ${timezoneOffset > 0 ? '-' : '+'}${String(Math.abs(timezoneOffset) / 60).padStart(2, '0')}:00)`;
 
 // Images for the carousel
 const images = [
