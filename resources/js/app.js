@@ -3,7 +3,7 @@ import "./bootstrap";
 import { createApp, h } from "vue";
 import { createInertiaApp, Link, Head } from "@inertiajs/vue3";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
-import AppLayout from "@/layouts/AppLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 axios.defaults.headers.common["X-CSRF-TOKEN"] = document
     .querySelector('meta[name="csrf-token"]')
