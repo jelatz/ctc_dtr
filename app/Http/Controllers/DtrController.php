@@ -17,6 +17,30 @@ class DtrController extends Controller
         return Inertia::render('Home');
     }
 
+    // public function getEmployeeAndSchedules(Request $request)
+    // {
+    //     $employeeID = $request->input('employeeID');
+
+    //     $employee = $this->dtrService->checkEmployee($employeeID);
+    //     if (!$employee) {
+    //         throw ValidationException::withMessages([
+    //             'employeeID' => 'Employee not found.'
+    //         ]);
+    //     }
+    //     $schedules = $this->dtrService->getEmployeeSchedules($request);
+
+    //     if (!$schedules) {
+    //         throw ValidationException::withMessages([
+    //             'employeeID' => 'No schedules found for employee.'
+    //         ]);
+    //     }
+
+    //     return redirect()->route('home')->with([
+    //         'employeeData' => $employee,
+    //         'schedules' => $schedules
+    //     ]);
+    // }
+
     public function getEmployeeAndSchedules(Request $request)
     {
         $employeeID = $request->input('employeeID');
@@ -24,20 +48,20 @@ class DtrController extends Controller
         $employee = $this->dtrService->checkEmployee($employeeID);
         if (!$employee) {
             throw ValidationException::withMessages([
-                'employeeID' => 'Employee not found.'
+                'employeeID' => 'Employee not found.',
             ]);
         }
-        $schedules = $this->dtrService->getEmployeeSchedules($request);
 
+        $schedules = $this->dtrService->getEmployeeSchedules($request);
         if (!$schedules) {
             throw ValidationException::withMessages([
-                'employeeID' => 'No schedules found for employee.'
+                'employeeID' => 'No schedules found for employee.',
             ]);
         }
 
-        return redirect()->route('home')->with([
+        return Inertia::render('Home', [
             'employeeData' => $employee,
-            'schedules' => $schedules
+            'schedules' => $schedules,
         ]);
     }
 
