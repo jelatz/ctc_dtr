@@ -15,7 +15,7 @@
                 <!-- CallTek Logo Area -->
                 <div class="text-center mb-8">
                 
-                    <img :src="getBasePath()+logo" alt="CallTek Logo" class="w-full h-full object-contain p-2" />
+                    <img :src="getBasePath()+logo" alt="CallTek Logo" class="lg:w-full md:h-full w-96 object-contain p-2 " />
                         <!-- <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg> -->
@@ -340,7 +340,7 @@ const confirmDtrSubmit = () => {
 
 // Current time and date
 const currentTime = ref(
-    new Date(new Date().getTime() + 5 * 60000).toLocaleTimeString(),
+    new Date(new Date().getTime()).toLocaleTimeString(),
 );
 
 const currentDateTime = ref("");
