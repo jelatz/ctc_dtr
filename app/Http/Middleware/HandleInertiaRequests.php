@@ -21,10 +21,19 @@ class HandleInertiaRequests extends Middleware
      *
      * @see https://inertiajs.com/asset-versioning
      */
+    // public function version(Request $request): ?string
+    // {
+    //     return parent::version($request);
+    // }
+
     public function version(Request $request): ?string
-    {
-        return parent::version($request);
-    }
+{
+    // This ensures that whenever you run 'npm run build', 
+    // Inertia detects the change and prevents the "Missing Component" error.
+    return file_exists($path = public_path('build/manifest.json'))
+        ? md5_file($path)
+        : parent::version($request);
+}
 
     /**
      * Define the props that are shared by default.
