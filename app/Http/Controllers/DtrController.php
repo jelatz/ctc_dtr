@@ -3,77 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\DtrService;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use App\Models\User;
-use App\Models\Schedule;
 
 class DtrController extends Controller
 {
+
+    public function __construct(protected DtrService $dtrService) {}
+
+    public function index()
+    {
+        return Inertia::render('Home');
+    }
+
     public function getEmployeeAndSchedules(Request $request)
     {
-        $request->validate([
-            'employeeID' => 'required|string|exists:users,employee_id',
-        ], [
-            'employeeID.exists' => 'Employee ID not found in the system.',
-        ]);
+        $employeeID = $request->input('employeeID');
 
-        $employeeId = $request->employeeID;
-
-        // Get employee data
-        $employee = User::where('employee_id', $employeeId)->first();
-
+        $employee = $this->dtrService->checkEmployee($employeeID);
         if (!$employee) {
-            return back()->withErrors([
-                'employeeID' => 'Employee not found.',
+            throw ValidationException::withMessages([
+                'employeeID' => 'Employee not found.'
+            ]);
+        }
+        $schedules = $this->dtrService->getEmployeeSchedules($request);
+
+        if (!$schedules) {
+            throw ValidationException::withMessages([
+                'employeeID' => 'No schedules found for employee.'
             ]);
         }
 
-        // Get last 5 schedules
-        $schedules = Schedule::where('employee_id', $employeeId)
-            ->with('dtr') // Assuming you have a dtr relationship
-            ->orderBy('sched_date', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Return to Home page with data
-        return Inertia::render('Home', [
+        return redirect()->route('home')->with([
             'employeeData' => $employee,
-            'schedules' => $schedules,
+            'schedules' => $schedules
         ]);
     }
 
     public function addDtr(Request $request)
     {
-        $request->validate([
-            'employee_id' => 'required|string|exists:users,employee_id',
-            'dtrDate' => 'required|date',
-            'type' => 'required|in:login,logout',
-        ]);
 
-        $employeeId = $request->employee_id;
-        $dtrDate = $request->dtrDate;
-        $type = $request->type;
+        $employeeID = $request->input('employee_id');
+        $dtrDate = $request->input('dtrDate');
+        $type = $request->input('type');
 
-        try {
-            // Your DTR logic here
-            // Example:
-            $dtr = \App\Models\Dtr::updateOrCreate(
-                [
-                    'employee_id' => $employeeId,
-                    'dtr_date' => $dtrDate,
-                ],
-                [
-                    $type === 'login' ? 'time_in' : 'time_out' => now(),
-                ]
-            );
-
-            return redirect()->route('home')->with('flash', [
-                'success' => ucfirst($type) . ' recorded successfully!',
+        $result = $this->dtrService->logDTR($employeeID, $dtrDate, $type);
+        if (!$result) {
+            throw ValidationException::withMessages([
+                'employeeID' => 'You already have logged in for today\'s shift. This action will be logged incase of overtime application'
             ]);
+        }
 
-        } catch (\Exception $e) {
-            return back()->withErrors([
-                'employeeID' => 'Failed to record ' . $type . '. Please try again.',
+        if ($result['type'] === 'login') {
+            return redirect()->route('home')->with([
+                'success' => 'You have logged in successfully.'
+            ]);
+        } else {
+            return redirect()->route('home')->with([
+                'success' => 'You have logged out successfully.'
             ]);
         }
     }
