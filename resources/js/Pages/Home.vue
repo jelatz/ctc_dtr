@@ -66,8 +66,8 @@
                         :class="[
                             'mt-6 w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg',
                             isLogin
-                                ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-blue-500/30'
-                                : 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 shadow-red-500/30',
+                                ? 'bg-gradient-to-r from-blue-600 to-blue-950 text-white hover:from-blue-700 hover:to-blue-800 shadow-blue-500/30'
+                                : 'bg-gradient-to-r from-red-600 to-red-950 text-white hover:from-red-700 hover:to-red-800 shadow-red-500/30',
                         ]" 
                         :disabled="formData.processing"
                     >
@@ -97,7 +97,7 @@
         </div>
 
         <!-- Right Carousel -->
-        <div class="flex items-start justify-center bg-gradient-to-br from-blue-50 to-slate-50">
+        <div class="flex items-start justify-center">
             <Carousel :slides="images" autoplay :interval="8000" />
         </div>
     </div>
@@ -206,13 +206,13 @@ const logo = "/images/ctc_logo.png";
 
 // Images for the carousel
 const images = [
-    { src: "/images/tony_espinoza.jpg", caption: "Tony Espinoza", description: "Sir Tony has dedicated his professional life to creating technology solutions that help businesses turn obstacles into opportunities. His passion and commitment have turned CallTek into a global enterprise that touches billions of consumers each day through the myriad of technology operators and service providers who depend on the company for support." },
-    { src: "/images/danny_wu.jpg", caption: "Danny Wu", description: "Sir Danny's involvement with global IT operations, vendor management, and data center operations gives him a high level of expertise in overall operations. Sir Danny Wu serves as the Vice President of Global Operations and has been an integral component of CallTek's success and growth for more than 13 years." },
-    { src: "/images/cher.jpg", caption: "Cher", description: "As the head of HR/Admin, Cher is good at strategy and her ability to organize makes her one of our strongest and successful leaders. She is always ready to engage any challenge to support our CTC BPO Family." },
-    { src: "/images/lizzie.jpg", caption: "Lizzie", description: "Lizzie is headstrong, strong-willed, and practically fearless which is a vital quality as an operations Manager. She is always ready to take on new challenges and too stubborn to back away from them." },
-    { src: "/images/cathleen.jpg", caption: "Cathleen", description: "Smart, tough, and hard-working, these qualities make Cathleen an effective operations Manager. Her dedication continues to serve as a pillar of leadership at CallTek." },
-    { src: "/images/jane.jpg", caption: "Jane", description: "Jane is an independent thinker and is responsible for helping manage our new global workforce. She has a deep understanding of our heritage and culture as she is one of our first family members in CallTek." },
-    { src: "/images/yanni.jpg", caption: "Yanni", description: "Yanni is resilient, optimistic, and extremely dedicated to her craft. She is able to overcome obstacles that come her way. She is not scared to invest emotionally, which enables her to foster connections and relationships." },
+    { src: "/images/tony_espinoza.jpg", caption: "Tony Espinoza", description: "Sir Tony has dedicated his professional life to creating technology solutions that help businesses turn obstacles into opportunities. His passion and commitment have turned CallTek into a global enterprise that touches billions of consumers each day through the myriad of technology operators and service providers who depend on the company for support.",position: "CEO" },
+    { src: "/images/danny_wu.jpg", caption: "Danny Wu", description: "Sir Danny's involvement with global IT operations, vendor management, and data center operations gives him a high level of expertise in overall operations. Sir Danny Wu serves as the Vice President of Global Operations and has been an integral component of CallTek's success and growth for more than 13 years.",position: "VP Global Operations" },
+    { src: "/images/cher.jpg", caption: "Cher", description: "As the head of HR/Admin, Cher is good at strategy and her ability to organize makes her one of our strongest and successful leaders. She is always ready to engage any challenge to support our CTC BPO Family.",position: "HR Admin" },
+    { src: "/images/lizzie.jpg", caption: "Lizzie", description: "Lizzie is headstrong, strong-willed, and practically fearless which is a vital quality as an operations Manager. She is always ready to take on new challenges and too stubborn to back away from them.",position: "Operations Manager" },
+    { src: "/images/cathleen.jpg", caption: "Cathleen", description: "Smart, tough, and hard-working, these qualities make Cathleen an effective operations Manager. Her dedication continues to serve as a pillar of leadership at CallTek.",position: "Operations Manager" },
+    { src: "/images/jane.jpg", caption: "Jane", description: "Jane is an independent thinker and is responsible for helping manage our new global workforce. She has a deep understanding of our heritage and culture as she is one of our first family members in CallTek.",position: "Operations Manager" },
+    { src: "/images/yanni.jpg", caption: "Yanni", description: "Yanni is resilient, optimistic, and extremely dedicated to her craft. She is able to overcome obstacles that come her way. She is not scared to invest emotionally, which enables her to foster connections and relationships.",position: "Operations Manager" },
 ];
 
 onMounted(() => {

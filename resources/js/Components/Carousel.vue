@@ -30,9 +30,9 @@
                   class="relative w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg ring-2 ring-blue-100/50"
                 />
                 
-                <!-- Position badge -->
-                <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md whitespace-nowrap">
-                  {{ current + 1 }} / {{ slides.length }}
+                <!-- Position -->
+                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-md font-semibold px-4 py-1.5 rounded-full shadow-md whitespace-nowrap">
+                  {{ slides[current].position }}
                 </div>
               </div>
             </div>
