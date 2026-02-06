@@ -27,13 +27,13 @@
 
                 <!-- Clock Display -->
                 <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-                    <p class="text-center text-6xl font-bold text-gray-900 mb-2 tracking-tight" style="text-shadow: 0 2px 8px rgba(0,0,0,0.06)">
+                    <p class="text-center text-4xl font-bold text-gray-900 mb-2 tracking-tight" style="text-shadow: 0 2px 8px rgba(0,0,0,0.06)">
                         {{ currentTime }}
                     </p>
                     <p class="text-center text-lg text-gray-700 font-medium mb-1">
                         {{ currentDateTime }}
                     </p>
-                    <p class="text-center text-sm text-gray-500">
+                    <p class="text-center text-md text-gray-500">
                         {{ timezone }}
                     </p>
                 </div>
@@ -84,7 +84,7 @@
                             : 'border-blue-300 shadow-lg shadow-blue-500/20',
                     ]"
                 >
-                    <p class="text-sm font-semibold text-gray-600 mb-1">Quick Access</p>
+                    <!-- <p class="text-sm font-semibold text-gray-600 mb-1">Quick Access</p> -->
                     <p :class="[
                         'text-2xl font-bold',
                         isLogin ? 'text-red-600' : 'text-blue-600',
@@ -208,15 +208,13 @@ const logo = "/images/ctc_logo.png";
 
 // Images for the carousel
 const images = [
-    { src: getBasePath() + "/images/ethan.jpg", caption: "Ethan", description: "Ethan is DUBIDUBIDAPDAP DUBIDUBIDIPDIP. ",position: "Certificate of Employment" },
     { src: getBasePath() + "/images/tony_espinoza.jpg", caption: "Tony Espinoza", description: "Sir Tony has dedicated his professional life to creating technology solutions that help businesses turn obstacles into opportunities. His passion and commitment have turned CallTek into a global enterprise that touches billions of consumers each day through the myriad of technology operators and service providers who depend on the company for support.",position: "CEO" },
     { src: getBasePath() + "/images/danny_wu.jpg", caption: "Danny Wu", description: "Sir Danny's involvement with global IT operations, vendor management, and data center operations gives him a high level of expertise in overall operations. Sir Danny Wu serves as the Vice President of Global Operations and has been an integral component of CallTek's success and growth for more than 13 years.",position: "VP Global Operations" },
     { src: getBasePath() + "/images/cher.jpg", caption: "Cher", description: "As the head of HR/Admin, Cher is good at strategy and her ability to organize makes her one of our strongest and successful leaders. She is always ready to engage any challenge to support our CTC BPO Family.",position: "HR Admin" },
     { src: getBasePath() + "/images/lizzie.jpg", caption: "Lizzie", description: "Lizzie is headstrong, strong-willed, and practically fearless which is a vital quality as an operations Manager. She is always ready to take on new challenges and too stubborn to back away from them.",position: "Operations Manager" },
     { src: getBasePath() + "/images/cathleen.jpg", caption: "Cathleen", description: "Smart, tough, and hard-working, these qualities make Cathleen an effective operations Manager. Her dedication continues to serve as a pillar of leadership at CallTek.",position: "Operations Manager" },
     { src: getBasePath() + "/images/jane.jpg", caption: "Jane", description: "Jane is an independent thinker and is responsible for helping manage our new global workforce. She has a deep understanding of our heritage and culture as she is one of our first family members in CallTek.",position: "Operations Manager" },
-    { src: getBasePath() + "/images/yanni.jpg", caption: "Yanni", description: "Yanni is resilient, optimistic, and extremely dedicated to her craft. She is able to overcome obstacles that come her way. She is not scared to invest emotionally, which enables her to foster connections and relationships.",position: "Operations Manager" }
-  
+    { src: getBasePath() + "/images/yanni.jpg", caption: "Yanni", description: "Yanni is resilient, optimistic, and extremely dedicated to her craft. She is able to overcome obstacles that come her way. She is not scared to invest emotionally, which enables her to foster connections and relationships.",position: "Operations Manager" },
 ];
 
 onMounted(() => {
