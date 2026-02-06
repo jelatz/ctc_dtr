@@ -2,20 +2,20 @@
     <Head title=" - Home" />
     <div class="flex -translate-x-[50vw] duration-500 ease-in-out *:w-[50vw]" id="container">
         <!-- Left Carousel -->
-        <div class="flex items-start justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+        <div class="flex items-start justify-center">
             <Carousel :slides="images" autoplay :interval="8000" />
         </div>
         
         <!-- Center Form -->
-        <div class="flex flex-col items-center justify-center p-8 bg-gradient-to-br from-white via-orange-50/30 to-blue-50/30 relative overflow-hidden" :data-aos="'fade-right'">
+        <div class="flex flex-col items-center justify-center p-8 relative overflow-hidden" :data-aos="'fade-right'">
             <!-- Background decoration -->
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] opacity-30"></div>
+            <!-- <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] opacity-30"></div> -->
             
             <div class="w-full max-w-md relative z-10">
                 <!-- CallTek Logo Area -->
                 <div class="text-center mb-8">
                 
-                    <img :src="logo" alt="CallTek Logo" class="w-full">
+                    <img :src="logo" alt="CallTek Logo" class="w-full drop-shadow-">
 
                         <!-- <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -23,7 +23,7 @@
                     <!-- <h1 class="text-4xl font-bold mb-2">
                         <span class="text-orange-600">Call</span><span class="text-blue-600">Tek</span>
                     </h1> -->
-                    <p class="text-gray-600 font-medium">Daily Time Record System</p>
+                    <p class="text-gray-600 font-extrabold text-xl">Daily Time Record</p>
                 </div>
 
                 <!-- Clock Display -->

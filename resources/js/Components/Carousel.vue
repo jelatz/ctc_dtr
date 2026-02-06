@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-full bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50 overflow-hidden">
+  <div class="relative w-full h-full overflow-hidden">
     <!-- Subtle background patterns -->
     <div class="absolute inset-0 overflow-hidden opacity-20">
       <div class="absolute top-20 right-20 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl"></div>
@@ -7,7 +7,7 @@
     </div>
 
     <!-- Grid pattern -->
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+    <!-- <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div> -->
 
     <!-- Content Container -->
     <div class="relative h-full flex flex-col items-center justify-center px-8 py-12">
