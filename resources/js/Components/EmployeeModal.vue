@@ -1,6 +1,6 @@
 <template>
     <Modal :show="show" @close="$emit('close')" modalTitle="Employee Information">
-        <div class="p-6">
+        <div class="p-6 w-full">
             <!-- Employee Info -->
             <div class="bg-gradient-to-br from-orange-50 to-blue-50 rounded-2xl p-6 mb-6 border border-gray-200">
                 <div class="flex items-center space-x-4">
@@ -10,7 +10,6 @@
                     <div class="flex-1">
                         <p class="text-sm font-semibold text-gray-600 mb-1">Employee ID</p>
                         <p class="text-2xl font-bold text-gray-900">{{ employeeData?.employee_id }}</p>
-                        <p class="text-sm text-gray-600 mt-2">Position: <span class="font-semibold">Staff</span></p>
                     </div>
                 </div>
             </div>

@@ -69,7 +69,7 @@ class DtrService
     public function logDTR(string $employeeID, string $dtrDate, string $type)
     {
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
-        $nowTime = now()->addMinutes(5);
+        $nowTime = now();
 
         // Validation rules
         if ($existingDtr && $type === 'login') {

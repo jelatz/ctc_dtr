@@ -41,7 +41,19 @@ return [
             'journal_mode' => null,
             'synchronous' => null,
         ],
-
+        'mysql_qis' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_QIS'),
+            'port' => env('DB_PORT_QIS', '3306'), // Good to have a port env
+            'database' => env('DB_NAME_QIS'),
+            'username' => env('DB_USER_QIS'),
+            'password' => env('DB_PASSWORD_QIS'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
@@ -147,7 +159,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

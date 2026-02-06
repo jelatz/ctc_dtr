@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // Primary Key
             $table->string('employee_id')->unique(); // Employee ID
             $table->string('name'); // Employee Name
-            $table->boolean('is_imported');
+            $table->boolean('is_imported')->default(false);
             $table->timestamps(); // Created_at & Updated_at
         });
 

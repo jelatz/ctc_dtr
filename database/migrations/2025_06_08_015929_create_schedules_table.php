@@ -6,27 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->string('employee_id');
-            $table->enum('day_type', ['working', 'holiday', 'dayoff']);
+            $table->enum('day_type', ['working', 'holiday', 'dayoff'])->default('working');
             $table->date('sched_date');
-            $table->datetime('sched_start');
-            $table->datetime('sched_end');
+            $table->datetime('sched_start')->nullable();
+            $table->datetime('sched_end')->nullable();
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('employee_id')->on('users')->onDelete('cascade');
+            // Foreign key
+            $table->foreign('employee_id')
+                ->references('employee_id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->unique(['employee_id', 'sched_date'], 'employee_schedule_unique');
+            
+            $table->index('sched_date');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('schedules');

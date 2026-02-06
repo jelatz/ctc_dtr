@@ -43,7 +43,7 @@
             </h2>
 
             <!-- Description -->
-            <p v-if="slides[current].description" class="text-center text-gray-600 text-base md:text-xl max-w-xl mx-auto leading-relaxed">
+            <p v-if="slides[current].description" class="text-center text-gray-600 text-base md:text-xl max-w-xl mx-auto">
               {{ slides[current].description }}
             </p>
           </div>
