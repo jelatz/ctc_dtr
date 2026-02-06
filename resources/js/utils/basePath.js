@@ -1,3 +1,4 @@
-export function getBasePath(){
-    return new URL("../", import.meta.url).href;
+export default function getBasePath() {
+    const url = new URL("../", import.meta.url);
+    return url.href;
 }
