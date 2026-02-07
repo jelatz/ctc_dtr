@@ -51,7 +51,7 @@ class DtrService
             'name'        => $localUser->name,
             'photo'       => $qisUser->PhotoFilename
                 ? $chrisBaseURL . ltrim($qisUser->PhotoFilename, '/')
-                : null,
+                : asset('images/default-prof-pic.png'),
         ];
     }
 

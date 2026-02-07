@@ -10,6 +10,7 @@
                     <div class="flex-1">
                         <p class="text-sm font-semibold text-gray-600 mb-1">Employee ID</p>
                         <p class="text-2xl font-bold text-gray-900">{{ employeeData?.employee_id }}</p>
+                        <p class="text-xl font-bold text-gray-900">{{ employeeData?.name }}</p>
                     </div>
                 </div>
             </div>

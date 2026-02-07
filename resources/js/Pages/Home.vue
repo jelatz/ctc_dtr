@@ -207,10 +207,10 @@ const confirmDtrSubmit = () => {
     });
 
     confirmDtrSubmitForm.post(route("confirm-dtr"), {
-        onSuccess: () => {
+        onSuccess: (data) => {
             Swal.fire({
                 title: "Success",
-                text: page.props.flash.success,
+                text: data.props.success,
                 icon: "success",
                 confirmButtonText: "OK",
                 confirmButtonColor: "#f97316",
