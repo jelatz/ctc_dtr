@@ -10,7 +10,7 @@
     <!-- <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div> -->
 
     <!-- Content Container -->
-    <div class="relative h-full flex flex-col items-center justify-center px-8 py-12">
+    <div class="relative h-full flex flex-col items-center justify-center px-8 py-5">
       <!-- Slides -->
       <transition name="fade-slide" mode="out-in" appear>
         <div v-if="slides.length > 0" :key="current" class="flex flex-col items-center max-w-2xl w-full">

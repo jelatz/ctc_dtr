@@ -7,7 +7,7 @@
         </div>
         
         <!-- Center Form -->
-        <div class="flex flex-col items-center justify-center p-8 relative overflow-hidden" data-aos="fade-right">
+        <div class="flex flex-col items-center justify-start mt-24 relative overflow-hidden" data-aos="fade-right">
             <div class="w-full max-w-md relative z-10">
                 <!-- Logo & Clock -->
                 <div class="text-center mb-8">
