@@ -5,7 +5,7 @@
             <div class="bg-gradient-to-br from-orange-50 to-blue-50 rounded-2xl p-6 mb-6 border border-gray-200">
                 <div class="flex items-center space-x-4">
                     <div class="w-24 h-24 rounded-xl bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                        {{ employeeData?.employee_id?.substring(0, 2).toUpperCase() }}
+                        <img :src="employeeData?.photo" alt="Employee Photo" class="w-full h-full object-cover rounded-xl" />
                     </div>
                     <div class="flex-1">
                         <p class="text-sm font-semibold text-gray-600 mb-1">Employee ID</p>

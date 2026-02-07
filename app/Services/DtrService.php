@@ -8,6 +8,8 @@ use App\Repositories\UserRepository;
 use App\Traits\ScheduleHelper; // <-- import your trait here
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class DtrService
 {
@@ -32,7 +34,25 @@ class DtrService
      */
     public function checkEmployee(string $employeeID)
     {
-        return $this->userRepository->checkEmployee($employeeID) ?: false;
+        $qisUser = DB::connection('mysql_qis')
+            ->table('EmployeeInfo')
+            ->where('InterEmployeeID', $employeeID)
+            ->first();
+
+        if (!$qisUser) return false;
+
+        $localUser = $this->userRepository->checkEmployee($employeeID);
+        if (!$localUser) return false;
+
+        $chrisBaseURL = "http://172.20.60.241/CHRIS/";
+
+        return [
+            'employee_id' => $localUser->employee_id,
+            'name'        => $localUser->name,
+            'photo'       => $qisUser->PhotoFilename
+                ? $chrisBaseURL . ltrim($qisUser->PhotoFilename, '/')
+                : null,
+        ];
     }
 
     /**
@@ -45,12 +65,10 @@ class DtrService
         $today = Carbon::today()->toDateString();
         $yesterday = Carbon::yesterday()->toDateString();
 
-        // Ensure employee has a schedule today
         if (!$this->scheduleRepository->getScheduleByDate($employeeID, $today)) {
             return false;
         }
 
-        // Use trait helper for schedule date computation
         $schedDate = $this->determineScheduleDate(
             $this->scheduleRepository,
             $employeeID,
@@ -71,7 +89,6 @@ class DtrService
         $existingDtr = $this->dtrRepository->checkDtrExists($employeeID, $dtrDate);
         $nowTime = now();
 
-        // Validation rules
         if ($existingDtr && $type === 'login') {
             return false; // Already logged in
         }
