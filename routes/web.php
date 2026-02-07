@@ -8,9 +8,9 @@ Route::inertia('/', 'Home')->name('home');
 Route::post('/get-schedules', [
     DtrController::class,
     'getEmployeeAndSchedules',
-])->name('get-schedules');
+])->middleware(\App\Http\Middleware\DebugRequests::class)->name('get-schedules');
 
 Route::post('/confirm-dtr', [
     DtrController::class,
     'addDtr',
-])->name('confirm-dtr');
+])->middleware(\App\Http\Middleware\DebugRequests::class)->name('confirm-dtr');

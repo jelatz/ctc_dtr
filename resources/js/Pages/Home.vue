@@ -278,11 +278,15 @@ const submitForm = () => {
         return;
     }
 
+    console.log('=== SUBMITTING FORM ===');
+    console.log('Employee ID:', formData.employeeID);
+    console.log('Route:', route("get-schedules"));
+    console.log('FormData:', formData);
+
     formData.post(route("get-schedules"), {
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        preserveUrl: true,
         onError: () => {
             showError.value = true;
             errorMessage.value =
