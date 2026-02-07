@@ -182,7 +182,6 @@ const submitForm = () => {
         preserveState: true,
         preserveScroll: true,
         replace: true,
-        preserveUrl: true,
         onError: () => {
             showError.value = true;
             errorMessage.value = formData.errors.employeeID || "Unexpected error";
