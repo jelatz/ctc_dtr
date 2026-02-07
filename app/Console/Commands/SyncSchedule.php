@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class SyncSchedule extends Command
@@ -11,15 +12,14 @@ class SyncSchedule extends Command
     protected $signature = 'app:sync-schedule';
     protected $description = 'Sync schedules from QIS database to DTR';
 
-
-
     public function handle(): int
     {
         $this->info('Starting schedule sync...');
+
         $startDate = now()->subMonth()->toDateString();
         $endDate   = now()->addDays(5)->toDateString();
 
-
+        $lastSync = Cache::get('last_schedule_sync');
 
         $query = DB::connection('mysql_qis')
             ->table('Schedules as qs')
@@ -36,14 +36,17 @@ class SyncSchedule extends Command
             ->where('qs.Deleted', 0)
             ->whereBetween('qs.SchedDate', [$startDate, $endDate]);
 
-        if (cache()->has('last_schedule_sync')) {
-            $query->where('qs.RowTimestamp', '>', cache('last_schedule_sync'));
+        if ($lastSync) {
+            $query->where('qs.RowTimestamp', '>', $lastSync);
         }
 
-        $query->orderBy('qs.SchedDate')
-            ->chunk(500, function ($rows) {
+        $latestTimestamp = null;
+
+        $query->orderBy('qs.RowTimestamp')
+            ->chunk(500, function ($rows) use (&$latestTimestamp) {
 
                 foreach ($rows as $row) {
+
                     DB::table('schedules')->updateOrInsert(
                         [
                             'employee_id' => $row->EmployeeID,
@@ -57,9 +60,14 @@ class SyncSchedule extends Command
                             'created_at'  => now(),
                         ]
                     );
+
+                    $latestTimestamp = $row->RowTimestamp;
                 }
             });
 
+        if ($latestTimestamp) {
+            Cache::put('last_schedule_sync', $latestTimestamp);
+        }
 
         $this->info('Schedule sync completed.');
 
