@@ -81,6 +81,21 @@ const logo = "images/ctc_logo.png";
 const timezoneOffset = new Date().getTimezoneOffset();
 const timezone = `${Intl.DateTimeFormat().resolvedOptions().timeZone} (UTC ${timezoneOffset > 0 ? '-' : '+'}${String(Math.abs(timezoneOffset) / 60).padStart(2, '0')}:00)`;
 
+defineProps({
+  employeeData: {
+    type: Object,
+    default: null,
+  },
+  schedules: {
+    type: Array,
+    default: () => [],
+  },
+  success: {
+    type: String,
+    default: null,
+  },
+})
+
 const images = [
     { src: `${basePath}images/tony_espinoza.jpg`, caption: "Tony Espinoza", description: "Sir Tony has dedicated his professional life to creating technology solutions that help businesses turn obstacles into opportunities. His passion and commitment have turned CallTek into a global enterprise that touches billions of consumers each day through the myriad of technology operators and service providers who depend on the company for support.", position: "CEO" },
     { src: `${basePath}images/danny_wu.jpg`, caption: "Danny Wu", description: "Sir Danny’s involvement with global IT operations, vendor management, and data center operations gives him a high level of expertise in overall operations. Sir Danny Wu serves as the Vice President of Global Operations and has been an integral component of CallTek’s success and growth for more than 13 years.", position: "VP Global Operations" },

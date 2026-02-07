@@ -67,26 +67,23 @@ class DtrController extends Controller
 
     public function addDtr(Request $request)
     {
-
         $employeeID = $request->input('employee_id');
         $dtrDate = $request->input('dtrDate');
         $type = $request->input('type');
 
         $result = $this->dtrService->logDTR($employeeID, $dtrDate, $type);
+
         if (!$result) {
             throw ValidationException::withMessages([
-                'employeeID' => 'You already have logged in for today\'s shift. This action will be logged incase of overtime application'
+                'employeeID' =>
+                'You already have logged in for today\'s shift. This action will be logged in case of overtime application.',
             ]);
         }
 
-        if ($result['type'] === 'login') {
-            return redirect()->route('home')->with([
-                'success' => 'You have logged in successfully.'
-            ]);
-        } else {
-            return redirect()->route('home')->with([
-                'success' => 'You have logged out successfully.'
-            ]);
-        }
+        return Inertia::render('Home', [
+            'success' => $result['type'] === 'login'
+                ? 'You have logged in successfully.'
+                : 'You have logged out successfully.',
+        ]);
     }
 }
