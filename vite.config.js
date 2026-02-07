@@ -12,5 +12,5 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
-    base: process.env.APP_ENV === 'production' ? '/calltek_dtr/' : '/',
+    base: process.env.APP_ENV === 'production' ? '/calltek_dtr/' : '/calltek_dtr',
 });
