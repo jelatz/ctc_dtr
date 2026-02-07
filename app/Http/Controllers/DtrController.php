@@ -43,6 +43,7 @@ class DtrController extends Controller
 
     public function getEmployeeAndSchedules(Request $request)
     {
+        dd($request->all());
         $employeeID = $request->input('employeeID');
 
         $employee = $this->dtrService->checkEmployee($employeeID);
