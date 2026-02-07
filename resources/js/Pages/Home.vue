@@ -150,6 +150,8 @@ const focusInput = () => setTimeout(() => employeeIDInput.value?.focus(), 300);
 
 const handleModalClose = () => {
     showModal.value = false;
+    // Reset URL to home route when modal closes
+    window.history.pushState({}, '', route('home'));
     focusInput();
 };
 
@@ -165,6 +167,7 @@ const submitForm = () => {
         preserveState: true,
         preserveScroll: true,
         replace: true,
+        preserveUrl: true,
         onError: () => {
             showError.value = true;
             errorMessage.value = formData.errors.employeeID || "Unexpected error";
