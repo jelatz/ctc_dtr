@@ -5,5 +5,8 @@ use App\Http\Controllers\DtrController;
 
 
 Route::inertia('/', 'Home')->name('home');
-Route::match(['get', 'post'], '/get-schedules', [DtrController::class, 'getEmployeeAndSchedules'])->name('get-schedules');
+Route::post('/get-schedules', [DtrController::class, 'getEmployeeAndSchedules'])->name('get-schedules');
+Route::get('/get-schedules', function () {
+    return redirect()->route('home');
+});
 Route::post('/confirm-dtr', [DtrController::class, 'addDtr'])->name('confirm-dtr');

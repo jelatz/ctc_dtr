@@ -12,12 +12,16 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:sync-user')
     ->weekly()
-    ->withoutOverlapping()
     ->onOneServer()
     ->appendOutputTo(storage_path('logs/sync-user.log'));
 
 Schedule::command('app:sync-schedule')
     ->hourly()
-    ->withoutOverlapping()
     ->onOneServer()
     ->appendOutputTo(storage_path('logs/sync-schedule.log'));
+
+
+Schedule::command('app:sync-dtr-to-qis')
+    ->everyMinute()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/sync-dtr-to-qis.log'));

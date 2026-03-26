@@ -14,23 +14,34 @@ class ScheduleRepository
     {
         try {
             // $localToday = Carbon::now($timezone);
-            $dateString = $date ?? now()->toDateString();
+            $dateString = $date ?? Carbon::now('Asia/Manila')->toDateString();
 
             $schedules = Schedule::with('user')
                 ->where('employee_id', $employeeID)
                 ->where('sched_date', '<=', $dateString)
                 ->orderByDesc('sched_date')
-                ->orderByDesc('start_time')
                 ->limit(5)
                 ->get();
 
             // Attach the correct DTR based on employee_id + time_in = sched_date
-            $schedules->each(function ($schedule) {
-                $schedule->setRelation('dtr', $schedule->dtr()->where('dtr_date', $schedule->sched_date)->first());
+            // $schedules->each(function ($schedule) {
+            //     $schedule->setRelation('dtr', $schedule->dtr()->where('dtr_date', $schedule->sched_date)->first());
+            // });
+
+
+            $schedules->each(function (Schedule $schedule) {
+                $schedule->setRelation(
+                    'dtr',
+                    $schedule->dtr()
+                        ->where('dtr_date', $schedule->sched_date)
+                        ->first()
+                );
             });
+
 
             return $schedules;
         } catch (Exception $e) {
+            dd($e->getMessage());
             Log::error("Failed to fetch schedules for employee: {$employeeID}. Error: " . $e->getMessage());
             return collect();
         }

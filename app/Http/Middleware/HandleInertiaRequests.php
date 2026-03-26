@@ -53,6 +53,11 @@ class HandleInertiaRequests extends Middleware
             'schedules' => $request->session()->get('schedules'),
             'employeeID' => $request->session()->get('employeeID'),
             'showModal' => $request->session()->get('showModal', false),
+            'server_time' => [
+                'now' => now()->timestamp * 1000,
+                'timezone' => config('app.timezone'),
+                'offset' => now()->getOffset(),
+            ]
         ]);
     }
 }

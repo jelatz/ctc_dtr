@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('employee_id')->index();
             $table->date('dtr_date');
             $table->enum('type', ['login', 'logout']);
+            $table->boolean('is_imported')->default(false);
             $table->timestamps();
         });
     }

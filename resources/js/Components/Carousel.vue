@@ -10,7 +10,7 @@
     <!-- <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div> -->
 
     <!-- Content Container -->
-    <div class="relative h-full flex flex-col items-center justify-center px-8 py-5">
+    <div class="relative h-full flex flex-col items-center px-8">
       <!-- Slides -->
       <transition name="fade-slide" mode="out-in" appear>
         <div v-if="slides.length > 0" :key="current" class="flex flex-col items-center max-w-2xl w-full">
@@ -43,7 +43,7 @@
             </h2>
 
             <!-- Description -->
-            <p v-if="slides[current].description" class="text-center text-gray-600 text-base md:text-xl max-w-xl mx-auto">
+            <p v-if="slides[current].description" class="text-center text-gray-600 text-base md:text-md max-w-xl mx-auto">
               {{ slides[current].description }}
             </p>
           </div>

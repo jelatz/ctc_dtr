@@ -44,15 +44,18 @@ return [
         'mysql_qis' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST_QIS'),
-            'port' => env('DB_PORT_QIS', '3306'), // Good to have a port env
+            'port' => env('DB_PORT_QIS', '3306'),
             'database' => env('DB_NAME_QIS'),
             'username' => env('DB_USER_QIS'),
             'password' => env('DB_PASSWORD_QIS'),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
+            'options' => [
+                PDO::ATTR_TIMEOUT => 3,
+            ],
         ],
         'mysql' => [
             'driver' => 'mysql',
